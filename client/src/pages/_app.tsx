@@ -1,13 +1,8 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { ThemeProvider } from 'styled-components';
-import GlobalStyle from '../../styles/globalStyles';
-
-const theme = {
-  colors: {
-    primary: '#0070f3',
-  },
-};
+import GlobalStyle from '../styles/globalStyles';
+import theme from '../styles/theme';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
