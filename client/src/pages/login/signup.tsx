@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 
 const SignupPage = () => {
   const [showSignupOptions, setShowSignupOptions] = useState(false);
+  const router=useRouter();
 
   const handleSignupClick = () => {
     setShowSignupOptions(true);
