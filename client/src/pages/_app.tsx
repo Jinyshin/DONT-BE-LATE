@@ -16,7 +16,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         />
         <meta name="description" content="Description" />
         <meta name="keywords" content="Keywords" />
-        <title>Next.js PWA Example</title>
+        <title>그만좀늦자</title>
 
         <link rel="manifest" href="/manifest.json" />
         <link
@@ -32,7 +32,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           sizes="32x32"
         />
         <link rel="apple-touch-icon" href="/apple-icon.png"></link>
-        <meta name="theme-color" content="#317EFB" />
+        <meta name="theme-color" content="#fff" />
       </Head>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
