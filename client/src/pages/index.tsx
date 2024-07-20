@@ -1,10 +1,12 @@
 import TimelineCard from '../components/TimelineCard';
 import { formatDate } from '../utils/dateFormatter';
+import {useRouter} from 'next/router';
 
 export default function Home() {
   const handleCheckIn = () => {
     alert('Checked in!');
   };
+  const router= useRouter();
 
   const appointments = [
     {
@@ -31,6 +33,7 @@ export default function Home() {
           onCheckIn={handleCheckIn}
         />
       ))}
+      <button onClick={()=>router.push('/login')}>임시버튼입니당</button>
     </div>
   );
 }
