@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import TimelineCard from '../components/TimelineCard';
 import { formatDate } from '../utils/dateFormatter';
+import {useRouter} from 'next/router';
 
 export default function Home() {
   const handleCheckIn = () => {
     alert('Checked in!');
   };
+  const router= useRouter();
 
   const appointments = [
     {
@@ -36,7 +38,9 @@ export default function Home() {
           />
         </TimelineCardWrapper>
       ))}
+
     </Container>
+
   );
 }
 
