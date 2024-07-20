@@ -1,7 +1,9 @@
+import React from 'react';
 import styled from 'styled-components';
 import TimelineCard from '../../components/TimelineCard';
+import Header from '../../components/Header';
+import MainBottomNavigation from '../../components/MainBottomNavigation';
 import { formatDate } from '../../utils/dateFormatter';
-import {useRouter} from 'next/router';
 
 export default function Home() {
   const handleCheckIn = () => {
@@ -25,34 +27,34 @@ export default function Home() {
 
   return (
     <Container>
-      <Title>나의 약속</Title>
-      {appointments.map((appointment, index) => (
-        <TimelineCardWrapper key={index}>
-          <TimelineCard
-            title={appointment.title}
-            group={appointment.group}
-            location={appointment.location}
-            date={appointment.date}
-            onCheckIn={handleCheckIn}
-          />
-        </TimelineCardWrapper>
-      ))}
-
+      <Header title="나의 약속" />
+      <Content>
+        {appointments.map((appointment, index) => (
+          <TimelineCardWrapper key={index}>
+            <TimelineCard
+              title={appointment.title}
+              group={appointment.group}
+              location={appointment.location}
+              date={appointment.date}
+              onCheckIn={handleCheckIn}
+            />
+          </TimelineCardWrapper>
+        ))}
+      </Content>
+      <MainBottomNavigation />
     </Container>
-
   );
 }
 
 const Container = styled.div`
-  padding: 20px;
   max-width: 800px;
   margin: 0 auto;
+  min-height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
+  padding-top: 60px; /* 헤더 높이 만큼 패딩 추가 */
 `;
 
-const Title = styled.h1`
-  font-size: 2em;
-  text-align: left;
-  margin-bottom: 20px;
+const Content = styled.div`
+  padding: 20px;
 `;
 
 const TimelineCardWrapper = styled.div`
