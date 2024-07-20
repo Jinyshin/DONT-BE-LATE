@@ -3,20 +3,16 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 
 
-const LoginPage = () => {
+const SignupPage = () => {
   const router=useRouter();
 
   const handleSignupClick = () => {
-    router.push('/login/signup');
-  };
-
-  const handleLogin=()=>{
     router.push('/');
-  }
+  };
 
   return (
     <Container>
-      <Title>로그인</Title>
+      <Title>회원가입</Title>
       <Form>
         <FormControl>
           <label htmlFor="email">이메일:</label>
@@ -26,9 +22,14 @@ const LoginPage = () => {
           <label htmlFor="password">비밀번호:</label>
           <Input type="password" id="password" name="password" required />
         </FormControl>
-        <LogInButton onClick={handleLogin}>로그인</LogInButton>
+        <FormControl>
+          <label htmlFor="password">닉네임:</label>
+          <Input type="password" id="password" name="password" required />
+        </FormControl>
+        <SignUpButton onClick={handleSignupClick}>회원 가입하기</SignUpButton>
       </Form>
-      <TextButton onClick={handleSignupClick}>회원 가입하기</TextButton>
+      <LoginInfo>이미 계정이 있다면?</LoginInfo>
+      <TextButton onClick={handleSignupClick}>로그인하기</TextButton>
     </Container>
   );
 };
@@ -64,7 +65,7 @@ const Input = styled.input`
   box-sizing: border-box;
 `;
 
-const LogInButton = styled.button`
+const SignUpButton = styled.button`
   margin-top: 1rem;
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.grayscale.white};
@@ -95,10 +96,22 @@ const TextButton = styled.button`
   }
 `;
 
+const LoginInfo = styled.span`
+  color: #007bff;
+  font-size: 14px; /* 폰트 크기를 줄임 */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center; /* 텍스트 정렬 */
+
+  &:hover {
+    color: #0056b3;
+  }
+`;
+
 const Title = styled.h1`
   font-size: 2em;
   text-align: left;
   margin-bottom: 20px;
 `;
 
-export default LoginPage;
+export default SignupPage;
