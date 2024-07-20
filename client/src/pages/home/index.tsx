@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import TimelineCard from '../components/TimelineCard';
-import Header from '../components/Header';
-import MainBottomNavigation from '../components/MainBottomNavigation';
-import { formatDate } from '../utils/dateFormatter';
+import TimelineCard from '../../components/TimelineCard';
+import Header from '../../components/Header';
+import MainBottomNavigation from '../../components/MainBottomNavigation';
+import { formatDate } from '../../utils/dateFormatter';
 
 export default function Home() {
   const handleCheckIn = () => {

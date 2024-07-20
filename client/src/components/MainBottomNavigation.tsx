@@ -9,7 +9,7 @@ const MainBottomNavigation: React.FC = () => {
   return (
     <Nav>
       <NavItem
-        href="/"
+        href="/home"
         active={activeTab === '홈'}
         onClick={() => setActiveTab('홈')}
       >
