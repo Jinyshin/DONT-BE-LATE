@@ -7,7 +7,7 @@ const LoginPage = () => {
   const router=useRouter();
 
   const handleSignupClick = () => {
-    router.push('login/signup');
+    router.push('/login/signup');
   };
 
   const handleLogin=()=>{
