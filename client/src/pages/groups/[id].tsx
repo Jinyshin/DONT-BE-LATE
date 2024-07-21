@@ -185,7 +185,7 @@ const AppointmentParticipants = ({
     <AppointmentParticipantProfiles>
       {
         participants.map(({ profileUrl }, i) => (
-          <AppointmentParticipantProfileImageContainer idx={i}>
+          <AppointmentParticipantProfileImageContainer key={i} idx={i}>
             <Image src={profileUrl} alt="" width={32} height={32} />
           </AppointmentParticipantProfileImageContainer>
         ))
