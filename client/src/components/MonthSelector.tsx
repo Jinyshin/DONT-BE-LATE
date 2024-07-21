@@ -5,13 +5,26 @@ import styled from 'styled-components';
 import { getNextMonth, getPreviousMonth, formatMonth } from '../utils/dateUtil';
 
 interface MonthSelectorProps {
+  monthWhenCalled: Date;
   currentMonth: Date;
   setCurrentMonth: (date: Date) => void;
 }
 
-const MonthSelector: React.FC<MonthSelectorProps> = ({ currentMonth, setCurrentMonth }) => {
+const MonthSelector: React.FC<MonthSelectorProps> = ({monthWhenCalled, currentMonth, setCurrentMonth }) => {
   const [showDropdown, setShowDropdown]= useState(false);
+  const isThereNextMonth =
+    (monthWhenCalled.getFullYear() > currentMonth.getFullYear()) ||
+    ((monthWhenCalled.getFullYear() == currentMonth.getFullYear())
+      && (getPreviousMonth(monthWhenCalled)> getPreviousMonth(currentMonth)));
   
+  const prevLimit=new Date(monthWhenCalled.getFullYear(),
+  monthWhenCalled.getMonth()-6+1, 1)
+
+  const isTherePrevMonth =
+    (prevLimit.getFullYear() < currentMonth.getFullYear()) ||
+    ((prevLimit.getFullYear() == currentMonth.getFullYear())
+      && (getPreviousMonth(prevLimit)< getPreviousMonth(currentMonth)));
+
   const handleNextMonth = () => {
     setCurrentMonth(getNextMonth(currentMonth));
   };
@@ -34,8 +47,8 @@ const MonthSelector: React.FC<MonthSelectorProps> = ({ currentMonth, setCurrentM
     for (let i=0; i<count; i++){
       months.push(
         getPreviousMonth(
-          new Date(currentMonth.getFullYear(),
-                    currentMonth.getMonth()-i, 1)
+          new Date(monthWhenCalled.getFullYear(),
+                    monthWhenCalled.getMonth()-i+1, 1)
                   ));
     }
     return months;
@@ -43,11 +56,21 @@ const MonthSelector: React.FC<MonthSelectorProps> = ({ currentMonth, setCurrentM
 
   return (
     <Container>
-      <ArrowButton onClick={handlePreviousMonth}>{"<"}</ArrowButton>
+      { isTherePrevMonth?
+        <ArrowButton onClick={handlePreviousMonth}>{"<"}</ArrowButton>
+      : <GrayArrowButton>{"<"}</GrayArrowButton>
+      }
+      
+      
       <MonthDisplay onClick={handleMonthClick}>
         {formatMonth(currentMonth)} <DropdownIcon>▼</DropdownIcon>
       </MonthDisplay>
-      <ArrowButton onClick={handleNextMonth}>{">"}</ArrowButton>
+
+
+      {isThereNextMonth?
+        <ArrowButton onClick={handleNextMonth}>{">"}</ArrowButton>
+      : <GrayArrowButton>{">"}</GrayArrowButton>
+      }
       {showDropdown && (
         <Dropdown>
           {getPastMonths(6).map((month, index) => (
@@ -73,6 +96,15 @@ const Container = styled.div`
 
 const ArrowButton = styled.button`
   background: #5581D913;
+  border: none;
+  border-radius: 5px;
+  margin: 0.3rem;
+  font-size: 1.5em;
+  cursor: pointer;
+`;
+
+const GrayArrowButton = styled.button`
+  background: #00000013;
   border: none;
   border-radius: 5px;
   margin: 0.3rem;
