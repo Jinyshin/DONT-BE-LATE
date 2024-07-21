@@ -96,18 +96,23 @@ const DropdownIcon = styled.span`
 const Dropdown = styled.div`
   position: absolute;
   top: 2.5rem;
-  left: 50%;
+  left: 60%;
   transform: translateX(-50%);
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  width: 60%;
 `;
 
 const DropdownItem = styled.div`
   padding: 0.5rem 1rem;
   cursor: pointer;
+  white-space: nowrap; /* 한 줄로 유지 */
+  overflow: hidden; /* 넘치는 텍스트를 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트를 ...으로 표시 */
+  align-items: 'center';
 
   &:hover {
     background-color: #f0f0f0;

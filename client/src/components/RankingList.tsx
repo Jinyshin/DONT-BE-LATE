@@ -31,7 +31,7 @@ const RankingList: React.FC<RankingListProps> = ({ rankings }) => {
             {index + 1 === 3 && <Medal>🥉</Medal>}
           </Rank>
           <Name>{item.name}</Name>
-          <Time time={item.time}>{formatTime(item.time)}</Time>
+          <Time time={item.time} >{formatTime(item.time)}</Time>
         </RankingItem>
       ))}
     </Container>
@@ -74,7 +74,7 @@ const Name = styled.div`
   text-align: center;
 `;
 
-const Time = styled.div`
+const Time = styled.div<{time: number}>`
   font-size: 0.8em;
   color:  ${({ time }) => (time > 0 ? '#F22E2E' : '#5581D9')};
 `;
