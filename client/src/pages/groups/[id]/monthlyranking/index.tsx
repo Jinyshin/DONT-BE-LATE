@@ -5,6 +5,7 @@ import MonthSelector from '../../../../components/MonthSelector';
 import RankingList from '../../../../components/RankingList';
 import GroupBottomNavigation from '../../../../components/GroupBottomNavigation';
 import GroupHeader from '../../../../components/GroupHeader';
+import { useParams } from 'next/navigation';
 
 interface Ranking {
   name: string;
@@ -50,6 +51,8 @@ const getRankingsByMonth = (month: Date) => {
 };
 
 const MonthlyRanking: React.FC = () => {
+  const groupId = useParams();
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const sortedRankings = getRankingsByMonth(currentMonth).sort(
     (a, b) => a.time - b.time
@@ -69,7 +72,7 @@ const MonthlyRanking: React.FC = () => {
         <MyRank>내 등수 0등</MyRank>
         <RankingList rankings={sortedRankings} />
       </Card>
-      <GroupBottomNavigation activeTab="랭킹" />
+      <GroupBottomNavigation activeTab="랭킹" groupId={groupId?.id as string} />
     </Container>
   );
 };

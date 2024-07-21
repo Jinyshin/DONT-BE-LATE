@@ -25,7 +25,7 @@ const GroupBottomNavigation: React.FC<GroupBottomNavigationProps> = ({
         <span>약속</span>
       </NavItem>
       <NavItem
-        href={`/monthlyranking`}
+        href={`/groups/${groupId}/monthlyranking`}
         active={activeTab === '랭킹' ? 'true' : 'false'}
         onClick={() => setActiveTab('랭킹')}
       >
