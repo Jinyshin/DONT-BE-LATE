@@ -5,12 +5,12 @@ import { MdEvent, MdLeaderboard, MdMailOutline } from 'react-icons/md';
 
 interface GroupBottomNavigationProps {
   activeTab?: string;
-  groupId: string; // 추가된 prop
+  groupId: string;
 }
 
 const GroupBottomNavigation: React.FC<GroupBottomNavigationProps> = ({
   activeTab: propsActiveTab,
-  groupId, // 추가된 prop
+  groupId,
 }) => {
   const [activeTab, setActiveTab] = useState(propsActiveTab || '약속');
 
