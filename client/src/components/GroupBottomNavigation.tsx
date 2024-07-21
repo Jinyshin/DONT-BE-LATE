@@ -5,17 +5,19 @@ import { MdEvent, MdLeaderboard, MdMailOutline } from 'react-icons/md';
 
 interface GroupBottomNavigationProps {
   activeTab?: string;
+  groupId: string; // 추가된 prop
 }
 
 const GroupBottomNavigation: React.FC<GroupBottomNavigationProps> = ({
   activeTab: propsActiveTab,
+  groupId, // 추가된 prop
 }) => {
   const [activeTab, setActiveTab] = useState(propsActiveTab || '약속');
 
   return (
     <Nav>
       <NavItem
-        href="/appointments"
+        href={`/appointments`}
         active={activeTab === '약속' ? 'true' : 'false'}
         onClick={() => setActiveTab('약속')}
       >
@@ -23,7 +25,7 @@ const GroupBottomNavigation: React.FC<GroupBottomNavigationProps> = ({
         <span>약속</span>
       </NavItem>
       <NavItem
-        href="/monthlyranking"
+        href={`/monthlyranking`}
         active={activeTab === '랭킹' ? 'true' : 'false'}
         onClick={() => setActiveTab('랭킹')}
       >
@@ -31,7 +33,7 @@ const GroupBottomNavigation: React.FC<GroupBottomNavigationProps> = ({
         <span>랭킹</span>
       </NavItem>
       <NavItem
-        href="/groupInvite"
+        href={`/groups/${groupId}/groupInvite`} // 동적 경로로 수정
         active={activeTab === '초대' ? 'true' : 'false'}
         onClick={() => setActiveTab('초대')}
       >
