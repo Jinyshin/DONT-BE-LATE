@@ -1,10 +1,10 @@
 // src/pages/MonthlyRanking/index.tsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import MonthSelector from '../../components/MonthSelector';
-import RankingList from '../../components/RankingList';
-import GroupBottomNavigation from '../../components/GroupBottomNavigation';
-import GroupHeader from '../../components/GroupHeader';
+import MonthSelector from '../../../../components/MonthSelector';
+import RankingList from '../../../../components/RankingList';
+import GroupBottomNavigation from '../../../../components/GroupBottomNavigation';
+import GroupHeader from '../../../../components/GroupHeader';
 
 interface Ranking {
   name: string;
