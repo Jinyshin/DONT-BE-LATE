@@ -10,6 +10,7 @@ export default function Home() {
     alert('Checked in!');
   };
 
+  // 임시 데이터
   const appointments = [
     {
       title: '밥 약속',

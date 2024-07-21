@@ -14,15 +14,15 @@ const MainBottomNavigation: React.FC<MainBottomNavigationProps> = ({activeTab: p
     <Nav>
       <NavItem
         href="/home"
-        active={activeTab === '홈'}
+        active={activeTab === '홈' ? 'true' : 'false'}
         onClick={() => setActiveTab('홈')}
       >
         <MdHomeFilled size={24} />
         <span>홈</span>
       </NavItem>
       <NavItem
-        href="/group"
-        active={activeTab === '그룹'}
+        href="/groups"
+        active={activeTab === '그룹' ? 'true' : 'false'}
         onClick={() => setActiveTab('그룹')}
       >
         <MdPeopleAlt size={24} />
@@ -38,8 +38,8 @@ const Nav = styled.nav`
   padding: 10px 0;
   position: fixed;
   bottom: 0;
-  left: 0; /* 화면의 왼쪽 끝에 고정 */
-  right: 0; /* 화면의 오른쪽 끝에 고정 */
+  left: 0;
+  right: 0;
   width: 100%;
   display: flex;
   justify-content: space-around;
@@ -47,11 +47,11 @@ const Nav = styled.nav`
   z-index: 1000; /* Ensure it stays on top of other content */
 `;
 
-const NavItem = styled(Link)<{ active: boolean }>`
+const NavItem = styled(Link)<{ active: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: ${({ active }) => (active ? '#5581D9' : '#999999')};
+  color: ${({ active }) => (active === 'true' ? '#5581D9' : '#999999')};
   text-decoration: none;
   font-size: 0.9em;
 
