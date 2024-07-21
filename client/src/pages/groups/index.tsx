@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
 import FloatingButton from '../../components/FloatingButton';
@@ -54,6 +55,7 @@ const tempGroups: Group[] = [
 const GroupsPage: React.FC = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [isModalOpen, setModalOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // 임시 데이터를 사용하여 상태 설정
@@ -87,12 +89,17 @@ const GroupsPage: React.FC = () => {
     setModalOpen(false);
   };
 
+  const handleGroupClick = (groupId: number) => {
+    // TODO: /appointment로 변경
+    router.push(`/groups/${groupId}/groupInvite`);
+  };
+
   return (
     <PageContainer>
       <Header title="나의 그룹" />
       <Content>
         {groups.map((group) => (
-          <GroupItem key={group.id}>
+          <GroupItem key={group.id} onClick={() => handleGroupClick(group.id)}>
             <GroupHeader>
               <GroupName>{group.name}</GroupName>
             </GroupHeader>
@@ -103,7 +110,7 @@ const GroupsPage: React.FC = () => {
         ))}
       </Content>
       <FloatingButton onClick={handleFloatingButtonClick} />
-      <MainBottomNavigation activeTab = '그룹'/>
+      <MainBottomNavigation activeTab="그룹" />
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
@@ -129,6 +136,8 @@ const Content = styled.div`
 const GroupItem = styled.div`
   border-bottom: 1px solid #eaeaea;
   padding: 12px 0;
+  cursor: pointer;
+
   &:last-child {
     margin-bottom: 60px;
   }

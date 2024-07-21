@@ -1,12 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import ShareButton from '../../components/ShareButton';
-import QRCodeGenerator from '../../components/QRCodeGenerator';
-import GroupHeader from '../../components/GroupHeader';
-import GroupBottomNavigation from '../../components/GroupBottomNavigation';
+import { useRouter } from 'next/router';
+import ShareButton from '../../../../components/ShareButton';
+import QRCodeGenerator from '../../../../components/QRCodeGenerator';
+import GroupHeader from '../../../../components/GroupHeader';
+import GroupBottomNavigation from '../../../../components/GroupBottomNavigation';
+import { useParams } from 'next/navigation';
 
 const GroupInvite: React.FC = () => {
-  const groupLink = 'https://www.google.com/'; // TODO: 그룹 가입 링크로 받아오기
+  const groupId = useParams();
+
+  // const groupLink = `https://google.com`; // 그룹 가입 링크로 동적 설정
+  const groupLink = `https://www.example.com/groups/${groupId}/invite`; // 그룹 가입 링크로 동적 설정
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(groupLink).then(() => {
@@ -48,7 +53,7 @@ const GroupInvite: React.FC = () => {
           됩니다.
         </span>
       </Description>
-      <GroupBottomNavigation activeTab="초대" />
+      <GroupBottomNavigation activeTab="초대" groupId={groupId?.id as string} />
     </Container>
   );
 };
