@@ -17,7 +17,7 @@ const GroupBottomNavigation: React.FC<GroupBottomNavigationProps> = ({
   return (
     <Nav>
       <NavItem
-        href={`/appointments`}
+        href={`/groups/${groupId}`}
         active={activeTab === '약속' ? 'true' : 'false'}
         onClick={() => setActiveTab('약속')}
       >
