@@ -7,6 +7,7 @@ const theme = {
     background: '#fff',
     accent: '#C9F235',
     warning: '#F22E2E',
+    warningBackground: '#f08e8e',
     grayscale: {
       white: '#FFFFFF',
       gray20: '#CCCCCC',
