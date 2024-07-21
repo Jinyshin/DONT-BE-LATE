@@ -41,7 +41,7 @@ export default function Home() {
           </TimelineCardWrapper>
         ))}
       </Content>
-      <MainBottomNavigation />
+      <MainBottomNavigation activeTab='홈' />
     </Container>
   );
 }

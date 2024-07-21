@@ -3,8 +3,13 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { MdEvent, MdLeaderboard, MdMailOutline } from 'react-icons/md';
 
-const GroupBottomNavigation: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('약속');
+interface GroupBottomNavigationProps{
+  activeTab?: string;
+}
+
+const GroupBottomNavigation: React.FC<GroupBottomNavigationProps> =({activeTab: propsActiveTab}) => {
+  
+  const [activeTab, setActiveTab] = useState(propsActiveTab||'약속');
 
   return (
     <Nav>
@@ -17,7 +22,7 @@ const GroupBottomNavigation: React.FC = () => {
         <span>약속</span>
       </NavItem>
       <NavItem
-        href="/ranking"
+        href="/monthlyranking"
         active={activeTab === '랭킹'}
         onClick={() => setActiveTab('랭킹')}
       >
