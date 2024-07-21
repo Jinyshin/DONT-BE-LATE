@@ -48,7 +48,7 @@ const GroupInvite: React.FC = () => {
           됩니다.
         </span>
       </Description>
-      <GroupBottomNavigation />
+      <GroupBottomNavigation activeTab="초대" />
     </Container>
   );
 };

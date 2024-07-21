@@ -3,12 +3,14 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { MdHomeFilled, MdPeopleAlt } from 'react-icons/md';
 
-interface MainBottomNavigationProps{
+interface MainBottomNavigationProps {
   activeTab?: string;
 }
 
-const MainBottomNavigation: React.FC<MainBottomNavigationProps> = ({activeTab: propsActiveTab}) => {
-  const [activeTab, setActiveTab] = useState(propsActiveTab||'홈');
+const MainBottomNavigation: React.FC<MainBottomNavigationProps> = ({
+  activeTab: propsActiveTab,
+}) => {
+  const [activeTab, setActiveTab] = useState(propsActiveTab || '홈');
 
   return (
     <Nav>

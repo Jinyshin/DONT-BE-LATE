@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import MonthSelector from '../../components/MonthSelector';
 import RankingList from '../../components/RankingList';
-import Header from '../../components/Header';
 import GroupBottomNavigation from '../../components/GroupBottomNavigation';
-
+import GroupHeader from '../../components/GroupHeader';
 
 interface Ranking {
   name: string;
@@ -52,20 +51,25 @@ const getRankingsByMonth = (month: Date) => {
 
 const MonthlyRanking: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const sortedRankings = getRankingsByMonth(currentMonth).sort((a, b) => a.time - b.time);
+  const sortedRankings = getRankingsByMonth(currentMonth).sort(
+    (a, b) => a.time - b.time
+  );
 
   return (
     <Container>
-      <Header title='월간랭킹'/>
+      <GroupHeader title="월간 랭킹" />
       <MonthSelectorWrapper>
-        <MonthSelector currentMonth={currentMonth} setCurrentMonth={setCurrentMonth} />
+        <MonthSelector
+          currentMonth={currentMonth}
+          setCurrentMonth={setCurrentMonth}
+        />
       </MonthSelectorWrapper>
       <Card>
         <CardTitle>이번 달 지각 시간</CardTitle>
         <MyRank>내 등수 0등</MyRank>
         <RankingList rankings={sortedRankings} />
       </Card>
-      <GroupBottomNavigation activeTab="랭킹"/>
+      <GroupBottomNavigation activeTab="랭킹" />
     </Container>
   );
 };
@@ -80,12 +84,12 @@ const MonthSelectorWrapper = styled.div`
   margin-top: 5rem; /* Adjust as necessary to avoid overlap with Header */
 `;
 
-const Card= styled.div`
-  background : #fff;
+const Card = styled.div`
+  background: #fff;
   border: 1px solid ${({ theme }) => theme.colors.grayscale.gray20};
   border-radius: 10px;
   padding: 1rem;
-  margin-top: 1rem
+  margin-top: 1rem;
 `;
 
 const CardTitle = styled.h3`
