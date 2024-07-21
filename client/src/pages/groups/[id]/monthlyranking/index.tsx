@@ -52,8 +52,8 @@ const getRankingsByMonth = (month: Date) => {
 
 const MonthlyRanking: React.FC = () => {
   const groupId = useParams();
-
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const monthWhenCalled=new Date();
+  const [currentMonth, setCurrentMonth] = useState(monthWhenCalled);
   const sortedRankings = getRankingsByMonth(currentMonth).sort(
     (a, b) => a.time - b.time
   );
@@ -63,6 +63,7 @@ const MonthlyRanking: React.FC = () => {
       <GroupHeader title="월간 랭킹" />
       <MonthSelectorWrapper>
         <MonthSelector
+        monthWhenCalled={monthWhenCalled}
           currentMonth={currentMonth}
           setCurrentMonth={setCurrentMonth}
         />
