@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
+import FloatingButton from '../../components/FloatingButton';
 
 interface Group {
   id: number;
@@ -69,6 +70,11 @@ const GroupsPage: React.FC = () => {
   //   fetchGroups();
   // }, []);
 
+  const handleFloatingButtonClick = () => {
+    console.log('FloatingButton clicked');
+    // TODO: 추가할 작업을 여기에 작성
+  };
+
   return (
     <Container>
       <Header title="나의 그룹" />
@@ -82,7 +88,7 @@ const GroupsPage: React.FC = () => {
           </GroupDetails>
         </GroupItem>
       ))}
-      <FloatingButton>+</FloatingButton>
+      <FloatingButton onClick={handleFloatingButtonClick} />
       <MainBottomNavigation />
     </Container>
   );
@@ -115,24 +121,6 @@ const GroupName = styled.span`
 const GroupDetails = styled.div`
   color: #666;
   font-size: 0.9em;
-`;
-
-const FloatingButton = styled.button`
-  position: fixed;
-  bottom: 80px;
-  right: 16px;
-  background-color: #5581d9;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 56px;
-  height: 56px;
-  font-size: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
 `;
 
 export default GroupsPage;
