@@ -121,7 +121,7 @@ const Footer = styled.div`
 `;
 
 const CloseButton = styled.button`
-  background-color: #fd8888;
+  background-color: #f08e8e;
   color: white;
   border: none;
   border-radius: 15px;

@@ -88,18 +88,20 @@ const GroupsPage: React.FC = () => {
   };
 
   return (
-    <Container>
+    <PageContainer>
       <Header title="나의 그룹" />
-      {groups.map((group) => (
-        <GroupItem key={group.id}>
-          <GroupHeader>
-            <GroupName>{group.name}</GroupName>
-          </GroupHeader>
-          <GroupDetails>
-            <span>{group.memberCount}</span>
-          </GroupDetails>
-        </GroupItem>
-      ))}
+      <Content>
+        {groups.map((group) => (
+          <GroupItem key={group.id}>
+            <GroupHeader>
+              <GroupName>{group.name}</GroupName>
+            </GroupHeader>
+            <GroupDetails>
+              <span>{group.memberCount}</span>
+            </GroupDetails>
+          </GroupItem>
+        ))}
+      </Content>
       <FloatingButton onClick={handleFloatingButtonClick} />
       <MainBottomNavigation />
       <Modal
@@ -107,19 +109,28 @@ const GroupsPage: React.FC = () => {
         onClose={handleCloseModal}
         onSubmit={handleCreateGroup}
       />
-    </Container>
+    </PageContainer>
   );
 };
 
-const Container = styled.div`
-  padding: 80px 20px 20px 20px;
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+`;
+
+const Content = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 80px 20px 100px 20px; /* bottom padding 추가 */
 `;
 
 const GroupItem = styled.div`
   border-bottom: 1px solid #eaeaea;
-  padding: 16px 0;
+  padding: 12px 0;
   &:last-child {
-    border-bottom: none;
+    margin-bottom: 60px;
   }
 `;
 

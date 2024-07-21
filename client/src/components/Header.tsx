@@ -28,7 +28,7 @@ const HeaderContainer = styled.header`
 `;
 
 const HeaderTitle = styled.h1`
-  font-size: 2em;
+  font-size: 1.8em;
   margin: 20px 0 0 0; /* top, right, bottom, left */
 `;
 
