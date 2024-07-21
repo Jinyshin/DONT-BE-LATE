@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import ShareButton from '../../components/ShareButton';
 import QRCodeGenerator from '../../components/QRCodeGenerator';
 import GroupHeader from '../../components/GroupHeader';
+import GroupBottomNavigation from '../../components/GroupBottomNavigation';
 
 const GroupInvite: React.FC = () => {
   const groupLink = 'https://www.google.com/'; // TODO: 그룹 가입 링크로 받아오기
@@ -47,6 +48,7 @@ const GroupInvite: React.FC = () => {
           됩니다.
         </span>
       </Description>
+      <GroupBottomNavigation />
     </Container>
   );
 };
