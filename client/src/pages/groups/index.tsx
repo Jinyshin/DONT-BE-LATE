@@ -103,7 +103,7 @@ const GroupsPage: React.FC = () => {
         ))}
       </Content>
       <FloatingButton onClick={handleFloatingButtonClick} />
-      <MainBottomNavigation />
+      <MainBottomNavigation activeTab = '그룹'/>
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
