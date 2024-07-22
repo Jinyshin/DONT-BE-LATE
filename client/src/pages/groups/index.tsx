@@ -83,15 +83,28 @@ const GroupsPage: React.FC = () => {
     setModalOpen(false);
   };
 
-  const handleCreateGroup = (groupName: string) => {
-    console.log('Creating group:', groupName);
-    // TODO: 그룹 생성 로직 추가
-    setModalOpen(false);
+  const handleCreateGroup = async (groupName: string) => {
+    try {
+      const response = await axios.post('http://localhost:8080/api/v1/groups', {
+        name: groupName,
+      });
+
+      const newGroup: Group = {
+        id: response.data.id,
+        name: response.data.name,
+        memberCount: `${response.data.num_participants}명`,
+      };
+
+      setGroups([...groups, newGroup]);
+    } catch (error) {
+      console.error('Error creating group:', error);
+    } finally {
+      setModalOpen(false);
+    }
   };
 
   const handleGroupClick = (groupId: number) => {
-    // TODO: /appointment로 변경
-    router.push(`/groups/${groupId}/groupInvite`);
+    router.push(`/groups/${groupId}`);
   };
 
   return (
