@@ -35,7 +35,7 @@ model Groups {
   id                  Int       @id @default(autoincrement())
 
   name                String
-  num_participants    Int       @default(0)
+  num_participants    Int       @default(1)
   participation_code  String
 
   users               GroupMembers[]
