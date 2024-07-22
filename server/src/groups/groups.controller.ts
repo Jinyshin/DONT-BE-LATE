@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -19,16 +11,19 @@ export class GroupsController {
   @Post()
   @ApiOperation({ summary: '새 그룹 생성' })
   create(@Body() createGroupDto: CreateGroupDto) {
-    return this.groupsService.create(createGroupDto);
+    // TODO: JWT에서 userId 추출해서 전달하기
+    return this.groupsService.create(createGroupDto, 1);
   }
 
   @Get()
+  @ApiOperation({ summary: '전체 그룹 목록 조회' })
   findAll() {
     return this.groupsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(':gid')
+  @ApiOperation({ summary: '그룹 초대 링크' })
+  findOne(@Param('gid') id: string) {
     return this.groupsService.findOne(+id);
   }
 }
