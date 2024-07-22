@@ -12,7 +12,7 @@ const GroupBottomNavigation: React.FC<GroupBottomNavigationProps> = ({
   activeTab: propsActiveTab,
   groupId,
 }) => {
-  const [activeTab, setActiveTab] = useState(propsActiveTab || '약속');
+  const [activeTab, setActiveTab] = useState(propsActiveTab);
 
   return (
     <Nav>
