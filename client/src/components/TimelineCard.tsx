@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { BlockquoteHTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { FiShare2 } from 'react-icons/fi';
 import { IoMdMore } from 'react-icons/io';
@@ -9,6 +9,7 @@ interface TimelineCardProps {
   location: string;
   group: string;
   date: string;
+  checked: boolean;
   onCheckIn: () => void;
 }
 
@@ -17,6 +18,7 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
   group,
   location,
   date,
+  checked,
   onCheckIn,
 }) => (
   <Card>
@@ -32,7 +34,9 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
       <div>{location}</div>
       <div>{date}</div>
     </CardContent>
-    <CheckInButton onClick={onCheckIn}>도착 체크인</CheckInButton>
+    {checked?
+    <CheckedInButton > 체크인한 약속입니다. </CheckedInButton>
+    :<CheckInButton onClick={onCheckIn}>도착 체크인</CheckInButton>}
   </Card>
 );
 
@@ -103,6 +107,22 @@ const GroupName = styled.div`
 const CheckInButton = styled.button`
   margin-top: 1rem;
   background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.grayscale.white};
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  width: 100%;
+
+  cursor: pointer;
+
+  &:active {
+    background-color: ${({ theme }) => theme.colors.secondaryDark};
+  }
+`;
+
+const CheckedInButton = styled.button`
+  margin-top: 1rem;
+  background-color: ${({ theme }) => theme.colors.grayscale.gray20};
   color: ${({ theme }) => theme.colors.grayscale.white};
   border: none;
   border-radius: 5px;
