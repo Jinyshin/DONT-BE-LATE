@@ -16,12 +16,14 @@ export default function Home() {
       title: '밥 약속',
       group: '상우와 아이들',
       location: '사당역 2호선 00식당',
+      checked: true,
       date: formatDate('2024-05-26T10:00:00'),
     },
     {
       title: '취업 스터디',
       group: '몰캠이들',
       location: '사당역 2호선 00카페',
+      checked: false,
       date: formatDate('2024-05-26T14:00:00'),
     },
   ];
@@ -37,6 +39,7 @@ export default function Home() {
               group={appointment.group}
               location={appointment.location}
               date={appointment.date}
+              checked={appointment.checked}
               onCheckIn={handleCheckIn}
             />
           </TimelineCardWrapper>
