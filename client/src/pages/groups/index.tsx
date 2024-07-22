@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
-import FloatingButton from '../../components/FloatingButton';
+import ExpandableFloatingButton from '../../components/ExpandableFloatingButton';
 import Modal from '../../components/Modal';
 
 interface Group {
@@ -54,7 +54,8 @@ const tempGroups: Group[] = [
 
 const GroupsPage: React.FC = () => {
   const [groups, setGroups] = useState<Group[]>([]);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isJoinGroupModalOpen, setJoinGroupModalOpen] = useState(false);
+  const [isCreateGroupModalOpen, setCreateGroupModalOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -76,11 +77,11 @@ const GroupsPage: React.FC = () => {
 
   const handleFloatingButtonClick = () => {
     // TODO: 추가할 작업을 여기에 작성
-    setModalOpen(true);
+    setCreateGroupModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setModalOpen(false);
+    setCreateGroupModalOpen(false);
   };
 
   const handleCreateGroup = async (groupName: string) => {
@@ -99,7 +100,7 @@ const GroupsPage: React.FC = () => {
     } catch (error) {
       console.error('Error creating group:', error);
     } finally {
-      setModalOpen(false);
+      setCreateGroupModalOpen(false);
     }
   };
 
@@ -122,10 +123,13 @@ const GroupsPage: React.FC = () => {
           </GroupItem>
         ))}
       </Content>
-      <FloatingButton onClick={handleFloatingButtonClick} />
+      <ExpandableFloatingButton
+        onJoinGroupClick={handleFloatingButtonClick}
+        onCreateGroupClick={handleFloatingButtonClick}
+      />
       <MainBottomNavigation activeTab="그룹" />
       <Modal
-        isOpen={isModalOpen}
+        isOpen={isCreateGroupModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleCreateGroup}
       />
