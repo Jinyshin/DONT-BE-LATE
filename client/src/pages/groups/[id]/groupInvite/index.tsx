@@ -11,7 +11,7 @@ const GroupInvite: React.FC = () => {
   const groupId = useParams();
 
   // const groupLink = `https://google.com`; // 그룹 가입 링크로 동적 설정
-  const groupLink = `https://www.example.com/groups/${groupId}/invite`; // 그룹 가입 링크로 동적 설정
+  const groupLink = `https://www.example.com/groups/${groupId?.id}/invite`; // 그룹 가입 링크로 동적 설정
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(groupLink).then(() => {
