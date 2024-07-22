@@ -85,7 +85,7 @@ const GroupsPage: React.FC = () => {
 
   const handleCreateGroup = async (groupName: string) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/groups', {
+      const response = await axios.post(`${process.env.BASE_URL}groups`, {
         name: groupName,
       });
 
