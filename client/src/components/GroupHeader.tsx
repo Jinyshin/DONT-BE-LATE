@@ -11,7 +11,7 @@ const GroupHeader: React.FC<GroupHeaderProps> = ({ title }) => {
   const router = useRouter();
 
   const handleBack = () => {
-    router.back();
+    router.push('/groups');
   };
 
   return (

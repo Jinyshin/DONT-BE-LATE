@@ -10,7 +10,7 @@ interface MainBottomNavigationProps {
 const MainBottomNavigation: React.FC<MainBottomNavigationProps> = ({
   activeTab: propsActiveTab,
 }) => {
-  const [activeTab, setActiveTab] = useState(propsActiveTab || '홈');
+  const [activeTab, setActiveTab] = useState(propsActiveTab);
 
   return (
     <Nav>
