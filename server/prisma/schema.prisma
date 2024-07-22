@@ -12,3 +12,118 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Users {
+  id            Int       @id @default(autoincrement())
+
+  email         String    @unique
+  password      String
+  nickname      String
+  profile_url   String
+
+  groups        GroupMembers[]
+  checkins      Checkins[]
+  appointments  Participants[]
+
+  is_deleted    Boolean   @default(false)
+
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @default(now())
+}
+
+model Groups {
+  id                  Int       @id @default(autoincrement())
+
+  name                String
+  num_participants    Int       @default(0)
+  participation_code  String
+
+  users               GroupMembers[]
+  appointments        Appointments[]
+
+  is_deleted          Boolean   @default(false)
+
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @default(now())
+}
+
+model Appointments {
+  id          Int       @id @default(autoincrement())
+
+  gid         Int
+
+  users       Participants[]
+  group       Groups    @relation(fields: [gid], references: [id])
+  checkins    Checkins[]
+
+  title       String
+  meet_at     DateTime
+  location    String
+  panelty     String
+
+  is_deleted  Boolean   @default(false)
+
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now())
+}
+
+model GroupMembers {
+  gid         Int
+  uid         Int
+
+  user        Users     @relation(fields: [uid], references: [id])
+  group       Groups    @relation(fields: [gid], references: [id])
+
+  is_deleted  Boolean   @default(false)
+
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now())
+
+  @@id([gid, uid])
+}
+
+model Participants {
+  aid         Int
+  uid         Int
+
+  user        Users         @relation(fields: [uid], references: [id])
+  appointment Appointments  @relation(fields: [aid], references: [id])
+
+  is_deleted  Boolean       @default(false)
+
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @default(now())
+
+  @@id([aid, uid])
+}
+
+model Checkins {
+  aid         Int
+  uid         Int
+
+  user        Users         @relation(fields: [uid], references: [id])
+  appointment Appointments  @relation(fields: [aid], references: [id])
+
+  is_deleted  Boolean       @default(false)
+
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @default(now())
+
+  @@id([aid, uid])
+}
+
+model Rankings {
+  gid               Int
+  uid               Int
+
+  year              Int
+  month             Int
+  accumulated_time  Int
+
+  is_deleted        Boolean   @default(false)
+
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @default(now())
+
+  @@id([gid, uid, year, month])
+}
