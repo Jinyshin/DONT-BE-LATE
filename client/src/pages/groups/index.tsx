@@ -144,7 +144,6 @@ const GroupsPage: React.FC = () => {
         onClose={handleCloseCreateGroupModal}
         onSubmit={handleCreateGroup}
       />
-
       <JoinGroupModal
         isOpen={isJoinGroupModalOpen}
         onClose={handleCloseJoinGroupModal}

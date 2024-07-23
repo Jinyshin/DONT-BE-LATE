@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MdClose } from 'react-icons/md';
 
@@ -14,6 +14,12 @@ const CreateGroupModal: React.FC<ModalProps> = ({
   onSubmit,
 }) => {
   const [groupName, setGroupName] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) {
+      setGroupName('');
+    }
+  }, [isOpen]);
 
   const handleSubmit = () => {
     onSubmit(groupName);
@@ -122,7 +128,7 @@ const Input = styled.input`
 const Footer = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-top: 20px;
+  margin-top: 30px;
 `;
 
 const CloseButton = styled.button`

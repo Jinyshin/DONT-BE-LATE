@@ -7,12 +7,14 @@ import { IoMdMore } from 'react-icons/io';
 import styled from 'styled-components';
 import GroupHeader from '../../../components/GroupHeader';
 import FloatingButton from '../../../components/FloatingButton';
+import CreateAppointmentModal from '../../../components/Modal/CreateAppointmentModal';
 
 type Group = ReturnType<typeof getGroupById>;
 type Appointment = Group['appointments'][number];
 export default function Group() {
   const params = useParams<{ id: string }>();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [isModalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const getGroupInfo = async (id: number) => {
@@ -53,8 +55,14 @@ export default function Group() {
   );
 
   const handleFloatingButtonClick = () => {
-    // TODO: 추가할 작업을 여기에 작성
+    setModalOpen(true);
   };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleCreateAppointment = () => {};
 
   return (
     <>
@@ -74,6 +82,11 @@ export default function Group() {
       <GroupBottomNavigationPlaceholder />
       <FloatingButton onClick={handleFloatingButtonClick} />
       <GroupBottomNavigation activeTab="약속" groupId={params?.id as string} />
+      <CreateAppointmentModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleCreateAppointment}
+      ></CreateAppointmentModal>
     </>
   );
 }

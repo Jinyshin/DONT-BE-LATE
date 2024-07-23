@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MdClose } from 'react-icons/md';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (groupName: string) => void;
+  onSubmit: (
+    appointmentName: string,
+    appointmentLocation: string,
+    appointmentDate: string,
+    appointmentPenalty: string
+  ) => void;
 }
 
 const CreateAppointmentModal: React.FC<ModalProps> = ({
@@ -13,11 +18,28 @@ const CreateAppointmentModal: React.FC<ModalProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const [groupName, setGroupName] = useState('');
+  const [appointmentName, setAppointmentName] = useState('');
+  const [appointmentLocation, setAppointmentLocation] = useState('');
+  const [appointmentDate, setAppointmentDate] = useState('');
+  const [appointmentPenalty, setAppointmentPenalty] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) {
+      setAppointmentName('');
+      setAppointmentLocation('');
+      setAppointmentDate('');
+      setAppointmentPenalty('');
+    }
+  }, [isOpen]);
 
   const handleSubmit = () => {
-    onSubmit(groupName);
-    setGroupName('');
+    onSubmit(
+      appointmentName,
+      appointmentLocation,
+      appointmentDate,
+      appointmentPenalty
+    );
+    setAppointmentName('');
   };
 
   if (!isOpen) return null;
@@ -26,18 +48,39 @@ const CreateAppointmentModal: React.FC<ModalProps> = ({
     <Overlay>
       <ModalContainer>
         <Header>
-          <Title>그룹 생성</Title>
+          <Title>약속 잡기</Title>
           <CloseIcon onClick={onClose}>
             <MdClose size={24} />
           </CloseIcon>
         </Header>
         <Content>
-          <Label>그룹 이름</Label>
+          <Label>무슨 약속인가요?</Label>
           <Input
             type="text"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
-            placeholder="새 그룹의 이름을 입력하세요"
+            value={appointmentName}
+            onChange={(e) => setAppointmentName(e.target.value)}
+            placeholder="새 약속의 이름을 입력하세요"
+          />
+          <Label>어느 장소인가요?</Label>
+          <Input
+            type="text"
+            value={appointmentLocation}
+            onChange={(e) => setAppointmentLocation(e.target.value)}
+            placeholder="약속 장소명을 입력하세요"
+          />
+          <Label>언제인가요?</Label>
+          <Input
+            type="text"
+            value={appointmentDate}
+            onChange={(e) => setAppointmentDate(e.target.value)}
+            placeholder="약속 일정을 입력하세요"
+          />
+          <Label>지각 벌칙을 정하세요!</Label>
+          <Input
+            type="text"
+            value={appointmentPenalty}
+            onChange={(e) => setAppointmentPenalty(e.target.value)}
+            placeholder="벌칙을 입력하세요"
           />
         </Content>
         <Footer>
@@ -106,6 +149,7 @@ const Label = styled.label`
 const Input = styled.input`
   width: 100%;
   padding: 10px;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 10px;
   color: #333;
@@ -122,7 +166,7 @@ const Input = styled.input`
 const Footer = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-top: 20px;
+  margin-top: 10px;
 `;
 
 const CloseButton = styled.button`
