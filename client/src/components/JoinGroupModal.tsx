@@ -8,7 +8,11 @@ interface ModalProps {
   onSubmit: (groupName: string) => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const JoinGroupModal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  onSubmit,
+}) => {
   const [groupName, setGroupName] = useState('');
 
   const handleSubmit = () => {
@@ -22,23 +26,23 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
     <Overlay>
       <ModalContainer>
         <Header>
-          <Title>그룹 생성</Title>
+          <Title>그룹 참여</Title>
           <CloseIcon onClick={onClose}>
             <MdClose size={24} />
           </CloseIcon>
         </Header>
         <Content>
-          <Label>그룹 이름</Label>
+          <Label>그룹 코드</Label>
           <Input
             type="text"
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
-            placeholder="새 그룹의 이름을 입력하세요"
+            placeholder="참여 코드를 입력하세요"
           />
         </Content>
         <Footer>
           <CloseButton onClick={onClose}>닫기</CloseButton>
-          <SubmitButton onClick={handleSubmit}>생성하기</SubmitButton>
+          <SubmitButton onClick={handleSubmit}>참여하기</SubmitButton>
         </Footer>
       </ModalContainer>
     </Overlay>
@@ -96,7 +100,7 @@ const Label = styled.label`
   display: block;
   margin-bottom: 10px;
   color: #333;
-  font-size: 14px;
+  font-size: 1.1rem;
 `;
 
 const Input = styled.input`
@@ -107,6 +111,7 @@ const Input = styled.input`
   color: #333;
   box-sizing: border-box;
   transition: border 0.2s;
+  font-size: 1rem;
 
   &:focus {
     border-color: #5581d9;
@@ -126,6 +131,7 @@ const CloseButton = styled.button`
   border: none;
   border-radius: 15px;
   padding: 10px 20px;
+  font-size: 1rem;
   cursor: pointer;
 `;
 
@@ -135,8 +141,9 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 15px;
   padding: 10px 20px;
-  cursor: pointer;
   margin-left: 10px;
+  font-size: 1rem;
+  cursor: pointer;
 `;
 
-export default Modal;
+export default JoinGroupModal;
