@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import TimelineCard from '../../components/TimelineCard';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
 import { formatDate } from '../../utils/dateFormatter';
+import CheckinModal from '../../components/CheckinModal';
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen]= useState<boolean>(false);
   const handleCheckIn = () => {
-    alert('Checked in!');
+    setIsModalOpen(true);
+  };
+
+  const onClose= ()=>{
+    setIsModalOpen(false);
   };
 
   // 임시 데이터
@@ -46,6 +52,8 @@ export default function Home() {
         ))}
       </Content>
       <MainBottomNavigation activeTab='홈' />
+      <CheckinModal isOpen= {isModalOpen} onClose={onClose} time={-3.234}/>
+
     </Container>
   );
 }
