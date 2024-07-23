@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { FiShare2 } from 'react-icons/fi';
 import { IoMdMore } from 'react-icons/io';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 import GroupHeader from '../../../components/GroupHeader';
 import FloatingButton from '../../../components/FloatingButton';
 
