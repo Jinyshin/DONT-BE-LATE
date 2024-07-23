@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
+import { useSearchParams } from 'next/navigation';
 
 
 const SignupPage = () => {
   const router=useRouter();
+  const params = useSearchParams();
 
   const handleSignupClick = () => {
     router.push('/');
   };
+
+  useEffect(() => {}, [params]);
 
   return (
     <Container>
@@ -25,6 +29,9 @@ const SignupPage = () => {
         <FormControl>
           <label htmlFor="password">닉네임:</label>
           <Input type="password" id="password" name="password" required />
+        </FormControl>
+        <FormControl>
+          <Input type="text" id="profile_url" hidden />
         </FormControl>
         <SignUpButton onClick={handleSignupClick}>회원 가입하기</SignUpButton>
       </Form>

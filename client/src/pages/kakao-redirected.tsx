@@ -20,7 +20,7 @@ export default () => {
 
       try {
         const { data: { accessToken } } = await axios.post<Response>(
-          "http://localhost:8080/kakao-redirected",
+          "http://localhost:8080/accounts/kakao/signin",
           { code },
           {
             headers: {
@@ -34,8 +34,8 @@ export default () => {
       } catch(e) {
         if (axios.isAxiosError(e)) {
           if (e.response?.status === 404) {
-            const { email, nickname, profile_url } = await e.response?.data;
-            location.href = `/?email=${email}&nickname=${nickname}&profile_url=${profile_url}`;
+            const { email, picture, nickname } = await e.response?.data;
+            location.href = `/signup?email=${email}&nickname=${nickname}&profile_url=${picture}`;
             return;
           }
         }
