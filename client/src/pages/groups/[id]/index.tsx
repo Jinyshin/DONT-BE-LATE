@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import GroupBottomNavigation from '../../../components/GroupBottomNavigation';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FiShare2 } from 'react-icons/fi';
 import { IoMdMore } from 'react-icons/io';
@@ -79,12 +79,12 @@ export default function Group() {
   );
 }
 
-const toAppointment= (appId: number)=>{
-  const router= useRouter();
-  return ()=>{
+const toAppointment = (appId: number) => {
+  const router = useRouter();
+  return () => {
     router.push(`/appointments/${appId}`);
-  }
-}
+  };
+};
 
 const CurrentAppointments = ({
   h,
@@ -139,8 +139,6 @@ const PreviousAppointments = ({
     </section>
   );
 };
-
-
 
 const GroupAppointmentCard = ({
   h,
