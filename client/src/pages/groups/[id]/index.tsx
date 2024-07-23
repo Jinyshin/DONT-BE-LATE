@@ -10,7 +10,6 @@ import FloatingButton from '../../../components/FloatingButton';
 
 type Group = ReturnType<typeof getGroupById>;
 type Appointment = Group['appointments'][number];
-
 export default function Group() {
   const params = useParams<{ id: string }>();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -79,6 +78,13 @@ export default function Group() {
   );
 }
 
+const toAppointment= (appId: number)=>{
+  const router= useRouter();
+  return ()=>{
+    router.push(`/appointments/${appId}`);
+  }
+}
+
 const CurrentAppointments = ({
   h,
   appointments,
@@ -95,7 +101,7 @@ const CurrentAppointments = ({
         <AppointmentList>
           {appointments.map((e) => (
             <li key={e.id.toString()}>
-              <AppointmentCard>
+              <AppointmentCard onClick={toAppointment(e.id)}>
                 <GroupAppointmentCard h={h} appointment={e} />
               </AppointmentCard>
             </li>
@@ -122,7 +128,7 @@ const PreviousAppointments = ({
         <AppointmentList>
           {appointments.map((e) => (
             <li key={e.id.toString()}>
-              <AppointmentCard>
+              <AppointmentCard onClick={toAppointment(e.id)}>
                 <GroupAppointmentCard h={h} appointment={e} />
               </AppointmentCard>
             </li>
@@ -132,6 +138,8 @@ const PreviousAppointments = ({
     </section>
   );
 };
+
+
 
 const GroupAppointmentCard = ({
   h,
@@ -273,6 +281,7 @@ const AppointmentCard = styled.article`
   border: 1px solid grey;
   border-radius: 10px;
   box-sizing: border-box;
+  cursor: pointer;
 `;
 
 const AppointmentCardHeader = styled.header`

@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import TimelineCard from '../../components/TimelineCard';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
 import { formatDate } from '../../utils/dateFormatter';
+import CheckinModal from '../../components/CheckinModal';
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen]= useState<boolean>(false);
   const handleCheckIn = () => {
-    alert('Checked in!');
+    setIsModalOpen(true);
+  };
+
+  const onClose= ()=>{
+    setIsModalOpen(false);
   };
 
   // 임시 데이터
@@ -16,12 +22,14 @@ export default function Home() {
       title: '밥 약속',
       group: '상우와 아이들',
       location: '사당역 2호선 00식당',
+      checked: true,
       date: formatDate('2024-05-26T10:00:00'),
     },
     {
       title: '취업 스터디',
       group: '몰캠이들',
       location: '사당역 2호선 00카페',
+      checked: false,
       date: formatDate('2024-05-26T14:00:00'),
     },
   ];
@@ -37,12 +45,15 @@ export default function Home() {
               group={appointment.group}
               location={appointment.location}
               date={appointment.date}
+              checked={appointment.checked}
               onCheckIn={handleCheckIn}
             />
           </TimelineCardWrapper>
         ))}
       </Content>
       <MainBottomNavigation activeTab='홈' />
+      <CheckinModal isOpen= {isModalOpen} onClose={onClose} time={-3.234}/>
+
     </Container>
   );
 }
