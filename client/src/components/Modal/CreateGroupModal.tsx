@@ -8,7 +8,11 @@ interface ModalProps {
   onSubmit: (groupName: string) => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const CreateGroupModal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  onSubmit,
+}) => {
   const [groupName, setGroupName] = useState('');
 
   const handleSubmit = () => {
@@ -142,4 +146,4 @@ const SubmitButton = styled.button`
   cursor: pointer;
 `;
 
-export default Modal;
+export default CreateGroupModal;

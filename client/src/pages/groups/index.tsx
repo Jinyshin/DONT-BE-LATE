@@ -5,8 +5,8 @@ import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
 import ExpandableFloatingButton from '../../components/ExpandableFloatingButton';
-import CreateGroupModal from '../../components/CreateGroupModal';
-import JoinGroupModal from '../../components/JoinGroupModal';
+import CreateGroupModal from '../../components/Modal/CreateGroupModal';
+import JoinGroupModal from '../../components/Modal/JoinGroupModal';
 
 interface Group {
   id: number;
