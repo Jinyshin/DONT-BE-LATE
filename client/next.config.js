@@ -8,6 +8,9 @@ module.exports = withPWA({
     styledComponents: true,
   },
   images: {
-    domains: ["encrypted-tbn0.gstatic.com"]
-  }
+    domains: ['encrypted-tbn0.gstatic.com'],
+  },
+  env: {
+    BASE_URL: process.env.BASE_URL,
+  },
 });

@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import { FiShare2 } from 'react-icons/fi';
 import { IoMdMore } from 'react-icons/io';
 import styled from 'styled-components';
-import { Router, useRouter } from 'next/router';
+import GroupHeader from '../../../components/GroupHeader';
+import FloatingButton from '../../../components/FloatingButton';
 
 type Group = ReturnType<typeof getGroupById>;
 type Appointment = Group['appointments'][number];
@@ -51,20 +52,27 @@ export default function Group() {
     ({ datetime }) => datetime <= now
   );
 
+  const handleFloatingButtonClick = () => {
+    // TODO: 추가할 작업을 여기에 작성
+  };
+
   return (
     <>
       <Container>
-        <Title>약속</Title>
-        <CurrentAppointments
-          h={toggleIsAccepted}
-          appointments={currentAppointments}
-        />
-        <PreviousAppointments
-          h={toggleIsAccepted}
-          appointments={previousAppointments}
-        />
+        <GroupHeader title="우리의 일정" />
+        <Content>
+          <CurrentAppointments
+            h={toggleIsAccepted}
+            appointments={currentAppointments}
+          />
+          <PreviousAppointments
+            h={toggleIsAccepted}
+            appointments={previousAppointments}
+          />
+        </Content>
       </Container>
       <GroupBottomNavigationPlaceholder />
+      <FloatingButton onClick={handleFloatingButtonClick} />
       <GroupBottomNavigation activeTab="약속" groupId={params?.id as string} />
     </>
   );
@@ -248,7 +256,11 @@ const Container = styled.main`
   box-sizing: border-box;
 `;
 
-const Title = styled.h1``;
+const Content = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 60px 0 100px 0;
+`;
 
 const Summary = styled.summary`
   list-style: none;
