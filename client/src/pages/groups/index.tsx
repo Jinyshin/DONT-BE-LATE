@@ -5,7 +5,8 @@ import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
 import ExpandableFloatingButton from '../../components/ExpandableFloatingButton';
-import Modal from '../../components/Modal';
+import CreateGroupModal from '../../components/CreateGroupModal';
+import JoinGroupModal from '../../components/JoinGroupModal';
 
 interface Group {
   id: number;
@@ -75,18 +76,25 @@ const GroupsPage: React.FC = () => {
   //   fetchGroups();
   // }, []);
 
-  const handleFloatingButtonClick = () => {
-    // TODO: 추가할 작업을 여기에 작성
+  const handleCreateGroupButtonClick = () => {
     setCreateGroupModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const handleJoinGroupButtonClick = () => {
+    setJoinGroupModalOpen(true);
+  };
+
+  const handleCloseCreateGroupModal = () => {
     setCreateGroupModalOpen(false);
+  };
+
+  const handleCloseJoinGroupModal = () => {
+    setJoinGroupModalOpen(false);
   };
 
   const handleCreateGroup = async (groupName: string) => {
     try {
-      const response = await axios.post(`${process.env.BASE_URL}groups`, {
+      const response = await axios.post(`${process.env.BASE_URL}/groups`, {
         name: groupName,
       });
 
@@ -124,13 +132,19 @@ const GroupsPage: React.FC = () => {
         ))}
       </Content>
       <ExpandableFloatingButton
-        onJoinGroupClick={handleFloatingButtonClick}
-        onCreateGroupClick={handleFloatingButtonClick}
+        onJoinGroupClick={handleJoinGroupButtonClick}
+        onCreateGroupClick={handleCreateGroupButtonClick}
       />
       <MainBottomNavigation activeTab="그룹" />
-      <Modal
+      <CreateGroupModal
         isOpen={isCreateGroupModalOpen}
-        onClose={handleCloseModal}
+        onClose={handleCloseCreateGroupModal}
+        onSubmit={handleCreateGroup}
+      />
+
+      <JoinGroupModal
+        isOpen={isJoinGroupModalOpen}
+        onClose={handleCloseJoinGroupModal}
         onSubmit={handleCreateGroup}
       />
     </PageContainer>
@@ -167,14 +181,14 @@ const GroupHeader = styled.div`
 `;
 
 const GroupName = styled.span`
-  font-weight: 600;
-  font-size: 1em;
+  font-weight: 400;
+  font-size: 1.2em;
   flex-grow: 1;
 `;
 
 const GroupDetails = styled.div`
   color: #666;
-  font-size: 0.9em;
+  font-size: 1.1em;
 `;
 
 export default GroupsPage;
