@@ -2,17 +2,84 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { useSearchParams } from 'next/navigation';
+import axios from 'axios';
 
 
 const SignupPage = () => {
   const router=useRouter();
   const params = useSearchParams();
 
-  const handleSignupClick = () => {
+  const [ email, setEmail ] = useState("");
+  const [ nickname, setNickname ] = useState("");
+  const [ password, setPassword ] = useState("");
+  const [ profileUrl, setProfileUrl ] = useState("");
+
+
+  type Handler = React.ChangeEventHandler<HTMLInputElement>;
+  const onEmailChanged: Handler = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const onNicknameChanged: Handler = (e) => {
+    setNickname(e.target.value);
+  };
+
+  const onPasswordChanged: Handler = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleSignupClick = async () => {
+    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/accounts/signup`;
+    console.log(url);
+
+    try {
+      await axios.post(
+        url!,
+        {
+          email,
+          nickname,
+          password,
+          profileUrl,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      router.push('/');
+    } catch(e) {
+      if (axios.isAxiosError(e)) {
+        if (e.response?.status === 400) {
+          alert('bad request');
+        } else {
+          alert('unknown error');
+        }
+      }
+    }
+  };
+
+  const handleSinginClick = () => {
     router.push('/');
   };
 
-  useEffect(() => {}, [params]);
+  useEffect(() => {
+    const callback = () => {
+      if (params.has("email")) {
+        setEmail(params.get("email")!);
+      }
+
+      if (params.has("nickname")) {
+        setNickname(params.get("nickname")!);
+      }
+
+      if (params.has("profile_url")) {
+        setProfileUrl(params.get("profile_url")!);
+      }
+    };
+
+    callback();
+  }, [params]);
 
   return (
     <Container>
@@ -20,23 +87,23 @@ const SignupPage = () => {
       <Form>
         <FormControl>
           <label htmlFor="email">이메일:</label>
-          <Input type="email" id="email" name="email" required />
+          <Input type="email" id="email" name="email" value={email} onChange={onEmailChanged} readOnly={!!params.get("email")} required />
         </FormControl>
         <FormControl>
           <label htmlFor="password">비밀번호:</label>
-          <Input type="password" id="password" name="password" required />
+          <Input type="password" id="password" name="password" value={password} onChange={onPasswordChanged} required />
         </FormControl>
         <FormControl>
-          <label htmlFor="password">닉네임:</label>
-          <Input type="password" id="password" name="password" required />
+          <label htmlFor="nickname">닉네임:</label>
+          <Input type="text" id="nickname" name="nickname" value={nickname} onChange={onNicknameChanged} readOnly={!!params.get("nickname")} required />
         </FormControl>
         <FormControl>
-          <Input type="text" id="profile_url" hidden />
+          <Input type="text" id="profile_url" value={profileUrl} onChange={() => {}} hidden />
         </FormControl>
-        <SignUpButton onClick={handleSignupClick}>회원 가입하기</SignUpButton>
+        <SignUpButton type="button" onClick={handleSignupClick}>회원 가입하기</SignUpButton>
       </Form>
       <LoginInfo>이미 계정이 있다면?</LoginInfo>
-      <TextButton onClick={handleSignupClick}>로그인하기</TextButton>
+      <TextButton onClick={handleSinginClick}>로그인하기</TextButton>
     </Container>
   );
 };
@@ -106,7 +173,6 @@ const TextButton = styled.button`
 const LoginInfo = styled.span`
   color: #007bff;
   font-size: 14px; /* 폰트 크기를 줄임 */
-  cursor: pointer;
   transition: all 0.3s ease;
   text-align: center; /* 텍스트 정렬 */
 

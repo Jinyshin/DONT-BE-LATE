@@ -37,7 +37,7 @@ model Groups {
 
   name                String
   num_participants    Int       @default(1)
-  participation_code  String
+  participation_code  String    @unique
 
   users               GroupMembers[]
   appointments        Appointments[]

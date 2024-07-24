@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type Response = {
@@ -8,8 +8,10 @@ type Response = {
 }
 
 export default () => {
-  const [ code, setCode ] = useState("");
+  const router = useRouter();
   const params = useSearchParams();
+
+  const [ code, setCode ] = useState("");
 
   useEffect(() => {
     const callback = async () => {
@@ -19,8 +21,9 @@ export default () => {
       }
 
       try {
+        const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/accounts/kakao/signin`;
         const { data: { accessToken } } = await axios.post<Response>(
-          "http://localhost:8080/accounts/kakao/signin",
+          url,
           { code },
           {
             headers: {
@@ -30,7 +33,7 @@ export default () => {
         );
 
         localStorage.setItem("accessToken", accessToken);
-        location.href = "/home"
+        router.push('/home');
       } catch(e) {
         if (axios.isAxiosError(e)) {
           if (e.response?.status === 404) {
@@ -40,12 +43,13 @@ export default () => {
           }
         }
 
-        location.href = "/";
+        router.push('/');
       }
     };
 
     callback();
   }, [code, params]);
 
-  return <>code: {code}</>
+  return <></>
+  // return <>code: {code}</>
 };
