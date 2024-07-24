@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { GroupMember } from './group-member.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { GroupMember } from './groupmember.entity';
 
 export class Group {
   constructor(partial: Partial<Group>) {

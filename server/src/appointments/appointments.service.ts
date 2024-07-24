@@ -7,10 +7,35 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AppointmentsService {
-  constructor (private prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) {}
 
-  create(createAppointmentDto: CreateAppointmentDto) {
-    return 'This action adds a new appointment';
+  async create(createAppointmentDto: CreateAppointmentDto, userId: number) {
+    try {
+      const appointment = await this.prisma.appointments.create({
+        data: {
+          ...createAppointmentDto,
+          meet_at: new Date(createAppointmentDto.meet_at),
+          is_deleted: false,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      });
+
+      await this.prisma.participants.create({
+        data: {
+          aid: appointment.id,
+          uid: userId,
+          is_deleted: false,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      });
+
+      return appointment;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Appointment creation failed');
+    }
   }
 
   findAll(){

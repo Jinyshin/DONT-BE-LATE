@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MdClose } from 'react-icons/md';
 
@@ -13,11 +13,17 @@ const JoinGroupModal: React.FC<ModalProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const [groupName, setGroupName] = useState('');
+  const [groupCode, setGroupCode] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) {
+      setGroupCode('');
+    }
+  }, [isOpen]);
 
   const handleSubmit = () => {
-    onSubmit(groupName);
-    setGroupName('');
+    onSubmit(groupCode);
+    setGroupCode('');
   };
 
   if (!isOpen) return null;
@@ -35,8 +41,8 @@ const JoinGroupModal: React.FC<ModalProps> = ({
           <Label>그룹 코드</Label>
           <Input
             type="text"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
+            value={groupCode}
+            onChange={(e) => setGroupCode(e.target.value)}
             placeholder="참여 코드를 입력하세요"
           />
         </Content>
@@ -122,7 +128,7 @@ const Input = styled.input`
 const Footer = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-top: 20px;
+  margin-top: 30px;
 `;
 
 const CloseButton = styled.button`

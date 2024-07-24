@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Group } from 'src/groups/entities/group.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Group } from './group.entity';
 
 export class GroupMember {
+  constructor(partial: Partial<GroupMember>) {
+    Object.assign(this, partial);
+  }
   @ApiProperty()
   gid: number;
 
