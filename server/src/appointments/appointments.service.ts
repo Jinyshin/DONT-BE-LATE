@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { GetGroupAppointmentDto } from './dto/get-group-appointments.dto';
 import { Appointment } from './entities/appointment.entity';
 import {Participant} from 'src/users/entities/participant.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -148,5 +149,39 @@ export class AppointmentsService {
     }
 
     return participant as Participant;
+  }
+
+  async findAllAppByGroup(gid: number,uid: number): Promise<GetGroupAppointmentDto[]> {
+
+    const appointments = await this.prisma.appointments.findMany({
+      where: { gid, is_deleted: false },
+      include: {
+        users: {
+          include: {
+            user: true,
+          },
+        },
+        checkins: true,
+      },
+    });
+
+    return appointments.map(appointment => {
+      // Filter participants who are not deleted
+      const activeParticipants = appointment.users.filter(participant => !participant.is_deleted);
+      
+      // Get profile URLs of active participants
+      const profileUrls = activeParticipants.map(participant => participant.user.profile_url);
+      
+      // Check if the user has participated
+      const participated = activeParticipants.some(participant => participant.uid === uid);
+
+      return {
+        title: appointment.title,
+        meet_at: appointment.meet_at,
+        location: appointment.location,
+        profileurl: profileUrls,
+        participated: participated,
+      };
+    });
   }
 }

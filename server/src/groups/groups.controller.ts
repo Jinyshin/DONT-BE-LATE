@@ -13,11 +13,16 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateGroupMemberDto } from './dto/create-groupmember.dto';
 import { GroupMemberResponseDto } from './dto/group-member-response.dto';
+import { AppointmentsService } from '../appointments/appointments.service';
+import { GetGroupAppointmentDto} from '../appointments/dto/get-group-appointments.dto'
 
 @Controller('api/v1/groups')
 @ApiTags('Groups')
 export class GroupsController {
-  constructor(private readonly groupsService: GroupsService) {}
+  constructor(
+    private readonly groupsService: GroupsService,
+    private readonly appointmentsService: AppointmentsService,    
+  ) {}
 
   @Post()
   @ApiOperation({ summary: '새 그룹 생성' })
@@ -73,4 +78,12 @@ export class GroupsController {
   findOne(@Param('gid') id: string) {
     return this.groupsService.findOne(+id);
   }
+
+  @Get(':gid/appointments')
+  @ApiOperation({summary: '그룹 내 모든 약속'})
+  findAllAppointments(@Param('gid') gid: string):Promise<GetGroupAppointmentDto[]>{
+    const userId=1;
+    return this.appointmentsService.findAllAppByGroup(parseInt(gid),userId);
+  }
+
 }
