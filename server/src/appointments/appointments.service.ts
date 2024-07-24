@@ -7,29 +7,32 @@ export class AppointmentsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createAppointmentDto: CreateAppointmentDto, userId: number) {
-    // 약속 엔티티 생성 및 저장
-    const appointment = await this.prisma.appointments.create({
-      data: {
-        ...createAppointmentDto,
-        meet_at: new Date(createAppointmentDto.meet_at),
-        is_deleted: false,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-    });
+    try {
+      const appointment = await this.prisma.appointments.create({
+        data: {
+          ...createAppointmentDto,
+          meet_at: new Date(createAppointmentDto.meet_at),
+          is_deleted: false,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      });
 
-    // Participants 테이블에 현재 user 추가
-    await this.prisma.participants.create({
-      data: {
-        aid: appointment.id,
-        uid: userId,
-        is_deleted: false,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-    });
+      await this.prisma.participants.create({
+        data: {
+          aid: appointment.id,
+          uid: userId,
+          is_deleted: false,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      });
 
-    return appointment;
+      return appointment;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Appointment creation failed');
+    }
   }
 
   findAll() {

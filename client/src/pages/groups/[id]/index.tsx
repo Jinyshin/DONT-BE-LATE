@@ -80,8 +80,6 @@ export default function Group() {
           penalty: appointmentPenalty,
         }
       );
-      console.log('된겨?');
-      console.log('Appointment created:', response.data);
       setModalOpen(false);
     } catch (error) {
       console.log('Failed to create appointment:', error);
