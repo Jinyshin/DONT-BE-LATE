@@ -115,6 +115,29 @@ const GroupsPage: React.FC = () => {
     }
   };
 
+  const handleJoinGroup = async (groupCode: string) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups/join`,
+        {
+          groupCode: groupCode,
+        }
+      );
+
+      const joinedGroup: Group = {
+        id: response.data.id,
+        name: response.data.name,
+        memberCount: `${response.data.num_participants}명`,
+      };
+
+      setGroups([...groups, joinedGroup]);
+    } catch (error) {
+      console.error('Error creating group:', error);
+    } finally {
+      setJoinGroupModalOpen(false);
+    }
+  };
+
   const handleGroupClick = (groupId: number) => {
     router.push(`/groups/${groupId}`);
   };
@@ -147,7 +170,7 @@ const GroupsPage: React.FC = () => {
       <JoinGroupModal
         isOpen={isJoinGroupModalOpen}
         onClose={handleCloseJoinGroupModal}
-        onSubmit={handleCreateGroup}
+        onSubmit={handleJoinGroup}
       />
     </PageContainer>
   );
