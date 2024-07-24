@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
+import Image from 'next/image';
 
 
 const LoginPage = () => {
@@ -59,6 +60,11 @@ const LoginPage = () => {
     }
   }
 
+  const handleKakaoLogin = () => {
+    router.push('https://kauth.kakao.com/oauth/authorize?client_id=1d8f95e817e0e004196570d7e3538048&redirect_uri=http://localhost:3000/kakao-redirected&response_type=code&scope=openid,profile_image,account_email,profile_nickname');
+    // location.href = 'https://kauth.kakao.com/oauth/authorize?client_id=1d8f95e817e0e004196570d7e3538048&redirect_uri=http://localhost:3000/kakao-redirected&response_type=code&scope=openid,profile_image,account_email,profile_nickname';
+  };
+
   return (
     <Container>
       <Title>로그인</Title>
@@ -72,6 +78,10 @@ const LoginPage = () => {
           <Input type="password" id="password" name="password" value={password} onChange={onPasswordChanged} required />
         </FormControl>
         <LogInButton type="button" onClick={handleLogin}>로그인</LogInButton>
+        <KakaoLogInButton type="button" onClick={handleKakaoLogin}>
+          <img src="/assets/kakao-symbol.png" width="10px" style={{marginRight: "8px", verticalAlign: "-0.5px"}} />
+          <span>카카오로 시작하기</span>
+        </KakaoLogInButton>
       </Form>
       <TextButton onClick={handleSignupClick}>회원 가입하기</TextButton>
     </Container>
@@ -113,6 +123,22 @@ const LogInButton = styled.button`
   margin-top: 1rem;
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.grayscale.white};
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  width: 100%;
+
+  cursor: pointer;
+
+  &:active {
+    background-color: ${({ theme }) => theme.colors.secondaryDark};
+  }
+`;
+
+const KakaoLogInButton = styled.button`
+  margin-top: 1rem;
+  background-color: #FEE500;
+  color: #191919;
   border: none;
   border-radius: 5px;
   padding: 0.5rem 1rem;
