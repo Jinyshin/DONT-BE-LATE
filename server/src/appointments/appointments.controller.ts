@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiTags,ApiOperation } from '@nestjs/swagger';
 
 @Controller('api/v1/appointments')
 @ApiTags('Appointments')
@@ -17,9 +17,11 @@ export class AppointmentsController {
   }
 
   @Get()
-  @ApiOperation({ summary: '전체 약속 목록 조회' })
-  findAll() {
-    return this.appointmentsService.findAll();
+  @ApiOperation({summary: "userId를 통해 메인에 띄울 약속 받아오기"})
+  //findAll(Headers("Authorization") token?: string) {
+    findAll() {
+    // TODO: JWT에서 userId 추출해서 전달하기
+    return this.appointmentsService.findByUserId(1);
   }
 
   @Get(':id')
