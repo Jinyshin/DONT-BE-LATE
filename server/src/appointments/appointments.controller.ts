@@ -42,7 +42,7 @@ export class AppointmentsController {
     @Param('aid') aid: string,
     @Body() patchAppointmentDto: PatchAppointmentDto
   ){
-    const userId=1;
+    const userId=2;
     return this.appointmentsService.updateParticipants(userId, parseInt(aid), patchAppointmentDto.isParticipating);
   }
 

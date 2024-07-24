@@ -131,10 +131,9 @@ export class AppointmentsService {
         },
         data: {
           is_deleted: !isParticipating,
+          updated_at: new Date(),
         },
       });
-      console.log("1");
-      console.log(`isParicipating=${isParticipating}, !isParticipating=${! isParticipating}`);
     }
     else{
       participant = await this.prisma.participants.create({
@@ -142,9 +141,10 @@ export class AppointmentsService {
           aid: aid,
           uid: userId,
           is_deleted: !isParticipating,
+          created_at: new Date(),
+          updated_at: new Date(),
         },
       });
-      console.log("2");
     }
 
     return participant as Participant;
