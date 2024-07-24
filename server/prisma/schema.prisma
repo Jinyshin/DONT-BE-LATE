@@ -59,7 +59,7 @@ model Appointments {
   title       String
   meet_at     DateTime
   location    String
-  panelty     String
+  penalty     String
 
   is_deleted  Boolean   @default(false)
 
