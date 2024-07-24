@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import GroupHeader from '../../../components/GroupHeader';
 import FloatingButton from '../../../components/FloatingButton';
 import CreateAppointmentModal from '../../../components/Modal/CreateAppointmentModal';
+import axios from 'axios';
 
 type Group = ReturnType<typeof getGroupById>;
 type Appointment = Group['appointments'][number];
@@ -62,7 +63,30 @@ export default function Group() {
     setModalOpen(false);
   };
 
-  const handleCreateAppointment = () => {};
+  const handleCreateAppointment = async (
+    appointmentName: string,
+    appointmentLocation: string,
+    appointmentDate: string,
+    appointmentPenalty: string
+  ) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments`,
+        {
+          gid: id,
+          title: appointmentName,
+          location: appointmentLocation,
+          meet_at: appointmentDate,
+          penalty: appointmentPenalty,
+        }
+      );
+      console.log('된겨?');
+      console.log('Appointment created:', response.data);
+      setModalOpen(false);
+    } catch (error) {
+      console.log('Failed to create appointment:', error);
+    }
+  };
 
   return (
     <>

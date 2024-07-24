@@ -70,7 +70,7 @@ const CreateAppointmentModal: React.FC<ModalProps> = ({
           />
           <Label>언제인가요?</Label>
           <Input
-            type="text"
+            type="datetime-local"
             value={appointmentDate}
             onChange={(e) => setAppointmentDate(e.target.value)}
             placeholder="약속 일정을 입력하세요"
