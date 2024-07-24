@@ -37,8 +37,8 @@ export default () => {
       } catch(e) {
         if (axios.isAxiosError(e)) {
           if (e.response?.status === 404) {
-            const { email, picture, nickname } = await e.response?.data;
-            router.push(`/signup?email=${email}&nickname=${nickname}&profile_url=${picture}`);
+            const { email, nickname, profile_url } = await e.response?.data;
+            router.push(`/signup?email=${email}&nickname=${nickname}&profile_url=${profile_url}`);
             return;
           }
         }
