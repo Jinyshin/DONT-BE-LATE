@@ -9,8 +9,11 @@ export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
   @Post()
+  @ApiOperation({ summary: '새 약속 생성' })
   create(@Body() createAppointmentDto: CreateAppointmentDto) {
-    return this.appointmentsService.create(createAppointmentDto);
+    console.log('됨?');
+    // TODO: JWT에서 userId 추출해서 전달하기
+    return this.appointmentsService.create(createAppointmentDto, 1);
   }
 
   @Get()
@@ -22,6 +25,7 @@ export class AppointmentsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: '약속 상세 조회' })
   findOne(@Param('id') id: string) {
     return this.appointmentsService.findOne(+id);
   }

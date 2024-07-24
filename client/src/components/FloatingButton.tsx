@@ -1,12 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+import { MdAdd } from 'react-icons/md';
 
 interface FloatingButtonProps {
   onClick: () => void;
 }
 
 const FloatingButton: React.FC<FloatingButtonProps> = ({ onClick }) => {
-  return <Button onClick={onClick}>+</Button>;
+  return (
+    <Button onClick={onClick}>
+      <MdAdd size={24} />
+    </Button>
+  );
 };
 
 const Button = styled.button`

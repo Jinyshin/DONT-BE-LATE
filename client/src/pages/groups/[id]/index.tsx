@@ -7,12 +7,15 @@ import { IoMdMore } from 'react-icons/io';
 import styled from 'styled-components';
 import GroupHeader from '../../../components/GroupHeader';
 import FloatingButton from '../../../components/FloatingButton';
+import CreateAppointmentModal from '../../../components/Modal/CreateAppointmentModal';
+import axios from 'axios';
 
 type Group = ReturnType<typeof getGroupById>;
 type Appointment = Group['appointments'][number];
 export default function Group() {
   const params = useParams<{ id: string }>();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [isModalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const getGroupInfo = async (id: number) => {
@@ -53,7 +56,34 @@ export default function Group() {
   );
 
   const handleFloatingButtonClick = () => {
-    // TODO: 추가할 작업을 여기에 작성
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleCreateAppointment = async (
+    appointmentName: string,
+    appointmentLocation: string,
+    appointmentDate: string,
+    appointmentPenalty: string
+  ) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments`,
+        {
+          gid: id,
+          title: appointmentName,
+          location: appointmentLocation,
+          meet_at: appointmentDate,
+          penalty: appointmentPenalty,
+        }
+      );
+      setModalOpen(false);
+    } catch (error) {
+      console.log('Failed to create appointment:', error);
+    }
   };
 
   return (
@@ -74,6 +104,11 @@ export default function Group() {
       <GroupBottomNavigationPlaceholder />
       <FloatingButton onClick={handleFloatingButtonClick} />
       <GroupBottomNavigation activeTab="약속" groupId={params?.id as string} />
+      <CreateAppointmentModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleCreateAppointment}
+      ></CreateAppointmentModal>
     </>
   );
 }

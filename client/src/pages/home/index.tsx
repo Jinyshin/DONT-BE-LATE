@@ -4,15 +4,15 @@ import TimelineCard from '../../components/TimelineCard';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
 import { formatDate } from '../../utils/dateFormatter';
-import CheckinModal from '../../components/CheckinModal';
+import CheckinModal from '../../components/Modal/CheckinModal';
 
 export default function Home() {
-  const [isModalOpen, setIsModalOpen]= useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const handleCheckIn = () => {
     setIsModalOpen(true);
   };
 
-  const onClose= ()=>{
+  const onClose = () => {
     setIsModalOpen(false);
   };
 
@@ -51,9 +51,8 @@ export default function Home() {
           </TimelineCardWrapper>
         ))}
       </Content>
-      <MainBottomNavigation activeTab='홈' />
-      <CheckinModal isOpen= {isModalOpen} onClose={onClose} time={-3.234}/>
-
+      <MainBottomNavigation activeTab="홈" />
+      <CheckinModal isOpen={isModalOpen} onClose={onClose} time={-3.234} />
     </Container>
   );
 }
