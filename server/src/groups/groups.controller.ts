@@ -12,7 +12,7 @@ import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateGroupMemberDto } from './dto/create-groupmember.dto';
-import { GroupMember } from './entities/groupmember.entity';
+import { GroupMemberResponseDto } from './dto/group-member-response.dto';
 
 @Controller('api/v1/groups')
 @ApiTags('Groups')
@@ -30,17 +30,17 @@ export class GroupsController {
   @ApiOperation({ summary: '그룹 참여' })
   async createGroupMember(
     @Body() createGroupMemberDto: CreateGroupMemberDto,
-  ): Promise<GroupMember> {
+  ): Promise<GroupMemberResponseDto> {
     return this.groupsService.createGroupMember(
       createGroupMemberDto.groupCode,
       3,
     );
   }
-  // TODO: 주석 해제 후 토큰 추가
+  // TODO: 주석 해제 후 토큰 추가`
   // async createGroupMember(
   //   @Body() createGroupMemberDto: CreateGroupMemberDto,
   //   @Headers('Authorization') token: string,
-  // ): Promise<GroupMember> {
+  // ): Promise<GroupMemberResponseDto> {
   //   if (!token) {
   //     throw new UnauthorizedException('No token provided');
   //   }

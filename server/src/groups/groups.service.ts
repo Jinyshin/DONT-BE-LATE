@@ -10,6 +10,7 @@ import { generateRandomCode } from 'src/utils/generate-groupcode';
 import { Group } from './entities/group.entity';
 import { JwtService } from '@nestjs/jwt';
 import { GroupMember } from './entities/groupmember.entity';
+import { GroupMemberResponseDto } from './dto/group-member-response.dto';
 
 @Injectable()
 export class GroupsService {
@@ -70,7 +71,7 @@ export class GroupsService {
   async createGroupMember(
     groupCode: string,
     userId: number,
-  ): Promise<GroupMember> {
+  ): Promise<GroupMemberResponseDto> {
     const group = await this.prisma.groups.findUnique({
       where: { participation_code: groupCode, is_deleted: false },
     });
@@ -87,7 +88,20 @@ export class GroupsService {
       },
     });
 
-    return new GroupMember(groupMember);
+    const updatedGroup = await this.prisma.groups.update({
+      where: { id: group.id },
+      data: { num_participants: { increment: 1 } },
+    });
+
+    return {
+      gid: groupMember.gid,
+      uid: groupMember.uid,
+      name: updatedGroup.name,
+      num_participants: updatedGroup.num_participants,
+      is_deleted: groupMember.is_deleted,
+      created_at: groupMember.created_at,
+      updated_at: groupMember.updated_at,
+    };
   }
   // 모든 그룹 조회
   async findAll(): Promise<Group[]> {
