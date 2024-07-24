@@ -26,7 +26,7 @@ const MonthlyRanking: React.FC = () => {
 
   useEffect(() => {
     const callback = async () => {
-      if (!params.id) {
+      if (!params?.id) {
         return;
       }
 
@@ -56,6 +56,7 @@ const MonthlyRanking: React.FC = () => {
           headers: { 'Authorization': `Bearer ${accessToken}` }
         }
       )
+      console.log(data);
       const rankings = data
         .rankings
         .map((r) => ({

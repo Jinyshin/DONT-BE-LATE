@@ -150,12 +150,10 @@ export class GroupsService {
             year,
             month,
           },
-          orderBy: {
-            accumulated_time: 'desc',
-            user: {
-              nickname: 'asc'
-            }
-          },
+          orderBy: [
+            { accumulated_time: 'desc' },
+            { user: { nickname: 'asc'} },
+          ],
           take: 20,
           select: {
             year: true,
