@@ -24,6 +24,7 @@ model Users {
   groups        GroupMembers[]
   checkins      Checkins[]
   appointments  Participants[]
+  rankigs       Rankings[]
 
   is_deleted    Boolean   @default(false)
 
@@ -40,6 +41,7 @@ model Groups {
 
   users               GroupMembers[]
   appointments        Appointments[]
+  rankings            Rankings[]
 
   is_deleted          Boolean   @default(false)
 
@@ -59,7 +61,7 @@ model Appointments {
   title       String
   meet_at     DateTime
   location    String
-  panelty     String
+  penalty     String
 
   is_deleted  Boolean   @default(false)
 
@@ -119,6 +121,9 @@ model Rankings {
   year              Int
   month             Int
   accumulated_time  Int
+
+  user        Users     @relation(fields: [uid], references: [id])
+  group       Groups    @relation(fields: [gid], references: [id])
 
   is_deleted        Boolean   @default(false)
 
