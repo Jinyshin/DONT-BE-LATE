@@ -134,4 +134,44 @@ export class GroupsService {
 
     return new Group(group);
   }
+
+  async isUserIn(uid: number, gid: number) {
+    return !!await this.prisma.groupMembers.findUnique({
+      where: { gid_uid: { gid, uid }, is_deleted: false }
+    });
+  }
+
+  async getRanking(id: number, year: number, month: number) {
+    const { rankings } = await this.prisma.groups.findUnique({
+      where: { id, is_deleted: false },
+      select: {
+        rankings: {
+          where: {
+            year,
+            month,
+          },
+          orderBy: {
+            accumulated_time: 'desc',
+            user: {
+              nickname: 'asc'
+            }
+          },
+          take: 20,
+          select: {
+            year: true,
+            month: true,
+            accumulated_time: true,
+            user: {
+              select: {
+                nickname: true,
+                profile_url: true,
+              }
+            },
+          }
+        }
+      }
+    });
+
+    return { rankings };
+  }
 }
