@@ -5,13 +5,13 @@ import { TokenPayload } from 'src/accounts/accounts.service';
 
 export async function authorize(jwtService: JwtService, authorization?: string) {
   const tokenPrefix = 'Bearer ';
-  const token = authorization.substring(tokenPrefix.length);
 
   if (!authorization || !authorization.startsWith(tokenPrefix)) {
     throw new UnauthorizedException();
   }
 
   try {
+    const token = authorization.substring(tokenPrefix.length);
     const { id } = await jwtService.verifyAsync<TokenPayload>(token);
 
     return { id };
