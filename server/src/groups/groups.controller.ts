@@ -15,13 +15,15 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { CreateGroupMemberDto } from './dto/create-groupmember.dto';
 import { GroupMemberResponseDto } from './dto/group-member-response.dto';
 import { authorize } from 'src/utils/jwt-auth';
+import { AppointmentsService } from '../appointments/appointments.service';
+import { GetGroupAppointmentDto} from '../appointments/dto/get-group-appointments.dto'
 
 @Controller('api/v1/groups')
 @ApiTags('Groups')
 export class GroupsController {
-  constructor(
-    private readonly groupsService: GroupsService,
-    private readonly jwtService: JwtService
+  constructor(private readonly groupsService: GroupsService,
+    private readonly jwtService: JwtService,
+    private readonly appointmentsService: AppointmentsService,
   ) {}
 
   @Post()
@@ -88,4 +90,12 @@ export class GroupsController {
     const { id: uid } = await authorize(this.jwtService, authorization);
     return this.groupsService.findOne(+id, uid);
   }
+
+  @Get(':gid/appointments')
+  @ApiOperation({summary: '그룹 내 모든 약속'})
+  findAllAppointments(@Param('gid') gid: string):Promise<GetGroupAppointmentDto[]>{
+    const userId=1;
+    return this.appointmentsService.findAllAppByGroup(parseInt(gid),userId);
+  }
+
 }
