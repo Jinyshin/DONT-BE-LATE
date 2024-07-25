@@ -4,8 +4,9 @@ import {
   Post,
   Body,
   Param,
+  Query,
   Headers,
-  UnauthorizedException,
+  BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -89,6 +90,29 @@ export class GroupsController {
   ) {
     const { id: uid } = await authorize(this.jwtService, authorization);
     return this.groupsService.findOne(+id, uid);
+  }
+
+  @Get(':gid/ranking')
+  async getRanking(
+    @Param('gid') gid: string,
+    @Query('year') year?: string,
+    @Query('month') month?: string,
+    @Headers('Authorization') authorization?: string
+  ) {
+    const _year = parseInt(year);
+    const _month = parseInt(month);
+    if (!Number.isInteger(_year) || !Number.isInteger(_month)) {
+      throw new BadRequestException();
+    }
+
+    const _gid = parseInt(gid);
+    const { id: uid } = await authorize(this.jwtService, authorization);
+
+    if (!await this.groupsService.isUserIn(uid, _gid)) {
+      throw new ForbiddenException();
+    }
+
+    return await this.groupsService.getRanking(_gid, _year, _month);
   }
 
   @Get(':gid/appointments')

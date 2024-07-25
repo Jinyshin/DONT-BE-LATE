@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { GetGroupAppointmentDto } from './dto/get-group-appointments.dto';
 import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
 import { Appointment } from './entities/appointment.entity';
 import {Participant} from 'src/users/entities/participant.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
-
+import { CheckinResponseDto } from './dto/checkin-response.dto';
 
 @Injectable()
 export class AppointmentsService {
@@ -38,6 +42,50 @@ export class AppointmentsService {
       console.error(error);
       throw new Error('Appointment creation failed');
     }
+  }
+
+  async createCheckin(aid: number, uid: number): Promise<CheckinResponseDto> {
+    // 이미 체크인 되어있는지 확인
+    const existingCheckin = await this.prisma.checkins.findUnique({
+      where: { aid_uid: { aid, uid } },
+    });
+
+    if (existingCheckin) {
+      throw new ConflictException('User is already checked in');
+    }
+
+    // 해당 약속이 존재하는지 확인
+    const appointment = await this.prisma.appointments.findUnique({
+      where: { id: aid, is_deleted: false },
+    });
+
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found');
+    }
+    // 현재 시간을 Asia/Seoul 시간대로 변환하여 저장
+    const now = new Date();
+    const seoulTime = new Date(
+      now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    );
+
+    // 체크인 정보 저장
+    const checkin = await this.prisma.checkins.create({
+      data: {
+        aid,
+        uid,
+        is_deleted: false,
+        created_at: seoulTime,
+        updated_at: seoulTime,
+      },
+    });
+
+    // 시간 차이 계산
+    const timeDifference =
+      (seoulTime.getTime() - new Date(appointment.meet_at).getTime()) / 1000;
+
+    return {
+      time_difference: timeDifference,
+    };
   }
 
   async getMyAppointments(userId: number) {
@@ -171,21 +219,26 @@ export class AppointmentsService {
     return `This action removes a #${id} appointment`;
   }
 
-  async updateParticipants(userId: number, aid:number, isParticipating:boolean): Promise<Participant>{
-    console.log("hi");
+  async updateParticipants(
+    userId: number,
+    aid: number,
+    isParticipating: boolean,
+  ): Promise<Participant> {
+    console.log('hi');
     let participant = await this.prisma.participants.findUnique({
       where: {
         aid_uid: {
           aid: aid,
-          uid: userId, },
+          uid: userId,
         },
-      });
+      },
+    });
 
-    if(participant){
+    if (participant) {
       participant = await this.prisma.participants.update({
         where: {
           aid_uid: {
-            aid:aid,
+            aid: aid,
             uid: userId,
           },
         },
@@ -194,8 +247,7 @@ export class AppointmentsService {
           updated_at: new Date(),
         },
       });
-    }
-    else{
+    } else {
       participant = await this.prisma.participants.create({
         data: {
           aid: aid,

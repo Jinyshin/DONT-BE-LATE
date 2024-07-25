@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { sha256 } from 'src/utils/hash';
 
@@ -104,6 +103,7 @@ export class AccountsService {
     });
 
     if (user === null) {
+      console.log(profile_url);
       throw new NotFoundException({ email, nickname, profile_url });
     }
 
