@@ -17,12 +17,13 @@ import { CreateGroupMemberDto } from './dto/create-groupmember.dto';
 import { GroupMemberResponseDto } from './dto/group-member-response.dto';
 import { authorize } from 'src/utils/jwt-auth';
 import { AppointmentsService } from '../appointments/appointments.service';
-import { GetGroupAppointmentDto} from '../appointments/dto/get-group-appointments.dto'
+import { GetGroupAppointmentDto } from '../appointments/dto/get-group-appointments.dto';
 
 @Controller('api/v1/groups')
 @ApiTags('Groups')
 export class GroupsController {
-  constructor(private readonly groupsService: GroupsService,
+  constructor(
+    private readonly groupsService: GroupsService,
     private readonly jwtService: JwtService,
     private readonly appointmentsService: AppointmentsService,
   ) {}
@@ -84,12 +85,8 @@ export class GroupsController {
 
   @Get(':gid')
   @ApiOperation({ summary: '그룹 초대 링크' })
-  async findOne(
-    @Param('gid') id: string,
-    @Headers('Authorization') authorization?: string,
-  ) {
-    const { id: uid } = await authorize(this.jwtService, authorization);
-    return this.groupsService.findOne(+id, uid);
+  async findOne(@Param('gid') id: string) {
+    return this.groupsService.getGroupInviteLink(+id);
   }
 
   @Get(':gid/ranking')
@@ -97,7 +94,7 @@ export class GroupsController {
     @Param('gid') gid: string,
     @Query('year') year?: string,
     @Query('month') month?: string,
-    @Headers('Authorization') authorization?: string
+    @Headers('Authorization') authorization?: string,
   ) {
     const _year = parseInt(year);
     const _month = parseInt(month);
@@ -108,7 +105,7 @@ export class GroupsController {
     const _gid = parseInt(gid);
     const { id: uid } = await authorize(this.jwtService, authorization);
 
-    if (!await this.groupsService.isUserIn(uid, _gid)) {
+    if (!(await this.groupsService.isUserIn(uid, _gid))) {
       throw new ForbiddenException();
     }
 
@@ -116,10 +113,11 @@ export class GroupsController {
   }
 
   @Get(':gid/appointments')
-  @ApiOperation({summary: '그룹 내 모든 약속'})
-  findAllAppointments(@Param('gid') gid: string):Promise<GetGroupAppointmentDto[]>{
-    const userId=1;
-    return this.appointmentsService.findAllAppByGroup(parseInt(gid),userId);
+  @ApiOperation({ summary: '그룹 내 모든 약속' })
+  findAllAppointments(
+    @Param('gid') gid: string,
+  ): Promise<GetGroupAppointmentDto[]> {
+    const userId = 1;
+    return this.appointmentsService.findAllAppByGroup(parseInt(gid), userId);
   }
-
 }

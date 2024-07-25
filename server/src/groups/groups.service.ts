@@ -19,6 +19,7 @@ export class GroupsService {
     private readonly jwtService: JwtService,
   ) {}
 
+  // 그룹 생성
   async create(createGroupDto: CreateGroupDto, userId: number): Promise<Group> {
     let participationCode = generateRandomCode(6);
 
@@ -103,42 +104,39 @@ export class GroupsService {
       updated_at: groupMember.updated_at,
     };
   }
+
   // 모든 그룹 조회
   async findAll(uid: number): Promise<Group[]> {
     const groups = await this.prisma.groups.findMany({
       where: {
         is_deleted: false,
         users: {
-          some: { uid }
-        }
+          some: { uid },
+        },
       },
     });
     return groups.map((group) => new Group(group));
   }
 
-  // 특정 ID를 가진 그룹 조회
-  async findOne(id: number, uid: number): Promise<Group> {
+  // 그룹 초대 링크 조회
+  async getGroupInviteLink(groupId: number) {
     const group = await this.prisma.groups.findUnique({
-      where: {
-        id,
-        is_deleted: false,
-        users: {
-          some: { uid }
-        }
-      },
+      where: { id: groupId, is_deleted: false },
     });
 
     if (!group) {
-      throw new NotFoundException(`Group with ID ${id} not found`);
+      throw new NotFoundException(`Group with ID ${groupId} not found`);
     }
 
-    return new Group(group);
+    const participationLink = `${process.env.CLIENT_BASE_URL}/join/${group.participation_code}`;
+
+    return { participationLink };
   }
 
   async isUserIn(uid: number, gid: number) {
-    return !!await this.prisma.groupMembers.findUnique({
-      where: { gid_uid: { gid, uid }, is_deleted: false }
-    });
+    return !!(await this.prisma.groupMembers.findUnique({
+      where: { gid_uid: { gid, uid }, is_deleted: false },
+    }));
   }
 
   async getRanking(id: number, year: number, month: number) {
@@ -152,7 +150,7 @@ export class GroupsService {
           },
           orderBy: [
             { accumulated_time: 'desc' },
-            { user: { nickname: 'asc'} },
+            { user: { nickname: 'asc' } },
           ],
           take: 20,
           select: {
@@ -163,11 +161,11 @@ export class GroupsService {
               select: {
                 nickname: true,
                 profile_url: true,
-              }
+              },
             },
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     return { rankings };
