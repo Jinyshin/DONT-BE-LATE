@@ -107,7 +107,7 @@ const GroupsPage: React.FC = () => {
       );
 
       const joinedGroup: Group = {
-        id: response.data.id,
+        id: response.data.gid,
         name: response.data.name,
         memberCount: `${response.data.num_participants}명`,
       };

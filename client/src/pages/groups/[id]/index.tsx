@@ -74,19 +74,24 @@ export default function Group() {
         }
       },
     ).then(() => {
-      const toggledAppointments = appointments.map((e) => {
-        if (e.id === aid) {
-          return {
-            ...e,
-            participated: !e.participated,
-          };
-        } else {
-          return e;
-        }
-      });
-      alert('toggled');
+      if (!params?.id) {
+        return;
+      }
 
-      setAppointments(toggledAppointments);
+      const { id: gid } = params;
+      const token = localStorage.getItem('accessToken');
+
+      type Response = Appointment[];
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups/${gid}/appointments`;
+      return axios.get<Response>(
+        url,
+        {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }
+      );
+    }).then((res) => {
+      const { data: appointments } = res!;
+      setAppointments(appointments);
     });
     e.stopPropagation();
   };
