@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FiShare2 } from 'react-icons/fi';
-import { IoMdMore } from 'react-icons/io';
+import { MdMoreHoriz, MdShare } from 'react-icons/md';
 import { handleShare } from '../utils/share';
 import AppointmentParticipants from './AppointmentParticipant';
 
@@ -81,7 +80,7 @@ const IconsWrapper = styled.div`
   align-items: center;
 `;
 
-const ShareIcon = styled(FiShare2)`
+const ShareIcon = styled(MdShare)`
   width: 22px;
   height: 22px;
   cursor: pointer;
@@ -92,7 +91,7 @@ const ShareIcon = styled(FiShare2)`
   }
 `;
 
-const MoreIcon = styled(IoMdMore)`
+const MoreIcon = styled(MdMoreHoriz)`
   width: 28px;
   height: 28px;
   cursor: pointer;
