@@ -1,13 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import TimelineCard from '../../components/TimelineCard';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
 import { formatDate } from '../../utils/dateFormatter';
 import CheckinModal from '../../components/Modal/CheckinModal';
 
+interface Appointment {
+  id: number;
+  title: string;
+  location: string;
+  meet_at: string;
+  group_name: string;
+  checked_in: boolean;
+  participants: string[];
+}
+
+interface FormattedAppointment extends Appointment {
+  formattedDate: string;
+  formattedTime: string;
+}
+
 export default function Home() {
+  const [appointments, setAppointments] = useState<FormattedAppointment[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments`
+        );
+        const formattedAppointments = response.data.map(
+          (appointment: Appointment) => {
+            const { formattedDate, formattedTime } = formatDate(
+              appointment.meet_at
+            );
+            return {
+              ...appointment,
+              formattedDate,
+              formattedTime,
+            };
+          }
+        );
+        setAppointments(formattedAppointments);
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
   const handleCheckIn = () => {
     setIsModalOpen(true);
   };
@@ -16,36 +61,20 @@ export default function Home() {
     setIsModalOpen(false);
   };
 
-  // 임시 데이터
-  const appointments = [
-    {
-      title: '밥 약속',
-      group: '상우와 아이들',
-      location: '사당역 2호선 00식당',
-      checked: true,
-      date: formatDate('2024-05-26T10:00:00'),
-    },
-    {
-      title: '취업 스터디',
-      group: '몰캠이들',
-      location: '사당역 2호선 00카페',
-      checked: false,
-      date: formatDate('2024-05-26T14:00:00'),
-    },
-  ];
-
   return (
     <Container>
       <Header title="나의 약속" />
       <Content>
-        {appointments.map((appointment, index) => (
-          <TimelineCardWrapper key={index}>
+        {appointments.map((appointment) => (
+          <TimelineCardWrapper key={appointment.id}>
             <TimelineCard
               title={appointment.title}
-              group={appointment.group}
+              group={appointment.group_name}
               location={appointment.location}
-              date={appointment.date}
-              checked={appointment.checked}
+              date={appointment.formattedDate}
+              time={appointment.formattedTime}
+              participants={appointment.participants}
+              checked={appointment.checked_in}
               onCheckIn={handleCheckIn}
             />
           </TimelineCardWrapper>
@@ -60,12 +89,12 @@ export default function Home() {
 const Container = styled.div`
   max-width: 800px;
   margin: 0 auto;
-  min-height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
-  padding-top: 60px; /* 헤더 높이 만큼 패딩 추가 */
+  min-height: 100vh;
+  padding-top: 60px;
 `;
 
 const Content = styled.div`
-  padding: 20px;
+  padding: 20px 20px 100px 20px;
 `;
 
 const TimelineCardWrapper = styled.div`

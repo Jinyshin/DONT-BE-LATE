@@ -1,15 +1,18 @@
-import React, { BlockquoteHTMLAttributes } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { FiShare2 } from 'react-icons/fi';
 import { IoMdMore } from 'react-icons/io';
 import { handleShare } from '../utils/share';
+import AppointmentParticipants from './AppointmentParticipant';
 
 interface TimelineCardProps {
   title: string;
   location: string;
   group: string;
   date: string;
+  time: string;
   checked: boolean;
+  participants: string[];
   onCheckIn: () => void;
 }
 
@@ -18,7 +21,9 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
   group,
   location,
   date,
+  time,
   checked,
+  participants,
   onCheckIn,
 }) => (
   <Card>
@@ -31,12 +36,18 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
     </CardHeader>
     <CardContent>
       <GroupName>{group}</GroupName>
-      <div>{location}</div>
-      <div>{date}</div>
+      <AppointmentParticipants participants={participants} />
+      <Location>장소: {location}</Location>
+      <DateTimeWrapper>
+        <span>일정: {date} </span>
+        <span>{time}</span>
+      </DateTimeWrapper>
     </CardContent>
-    {checked?
-    <CheckedInButton > 체크인한 약속입니다. </CheckedInButton>
-    :<CheckInButton onClick={onCheckIn}>도착 체크인</CheckInButton>}
+    {checked ? (
+      <CheckedInButton>체크인한 약속입니다.</CheckedInButton>
+    ) : (
+      <CheckInButton onClick={onCheckIn}>도착 체크인</CheckInButton>
+    )}
   </Card>
 );
 
@@ -92,6 +103,8 @@ const MoreIcon = styled(IoMdMore)`
 `;
 
 const CardContent = styled.div`
+  width: 100%;
+  box-sizing: border-box;
   margin-top: 0.5rem;
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.grayscale.gray60};
@@ -102,6 +115,27 @@ const GroupName = styled.div`
   font-size: 1rem;
   font-weight: bold;
   color: ${({ theme }) => theme.colors.primary};
+`;
+
+const Location = styled.div`
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.colors.grayscale.gray60};
+`;
+
+const DateTimeWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.2rem;
+  width: 100%;
+
+  & > span {
+    margin-right: 0.5rem; /* 요소들 사이의 간격 추가 */
+  }
+
+  & > span:last-child {
+    margin-right: 0; /* 마지막 요소의 간격 제거 */
+  }
 `;
 
 const CheckInButton = styled.button`
