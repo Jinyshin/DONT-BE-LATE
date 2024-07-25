@@ -83,6 +83,21 @@ export class AppointmentsService {
     const timeDifference =
       (seoulTime.getTime() - new Date(appointment.meet_at).getTime()) / 1000;
 
+    const { gid } = appointment;
+    const year = new Date(appointment.meet_at).getFullYear();
+    const month = new Date(appointment.meet_at).getMonth() + 1;
+    await this.prisma.rankings.upsert({
+      where: {
+        gid_uid_year_month: { gid, uid, year, month }
+      },
+      create: { gid, uid, year, month },
+      update: {
+        accumulated_time: {
+          increment: timeDifference
+        }
+      },
+    })
+
     return {
       time_difference: timeDifference,
     };

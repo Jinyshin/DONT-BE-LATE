@@ -30,8 +30,14 @@ export default function Home() {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
+        const token = localStorage.getItem('accessToken');
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
         );
         const formattedAppointments = response.data.map(
           (appointment: Appointment) => {
@@ -56,8 +62,15 @@ export default function Home() {
 
   const handleCheckIn = async (aid: number) => {
     try {
+      const token = localStorage.getItem('accessToken');
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments/${aid}/checkin`
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments/${aid}/checkin`,
+        {},
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
       );
       setCheckinTime(response.data.time_difference);
       setAppointments((prevAppointments) =>

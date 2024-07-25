@@ -108,11 +108,13 @@ const data = {
     {
       id: 300,
       name: "몰입캠프 1분반",
+      num_participants: 4,
       participation_code: "SZQHQQ"
     },
     {
       id: 301,
       name: "몰입캠프 1분반 4주차",
+      num_participants: 4,
       participation_code: "EAR06U"
     }
   ],

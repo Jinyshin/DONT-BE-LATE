@@ -36,8 +36,10 @@ export class AppointmentsController {
   @ApiOperation({ summary: '약속 체크인' })
   async createCheckin(
     @Param('id', ParseIntPipe) id: number,
+    @Headers('Authorization') authorization?: string,
   ): Promise<CheckinResponseDto> {
-    return this.appointmentsService.createCheckin(id, 1);
+    const { id: uid } = await authorize(this.jwtService, authorization);
+    return this.appointmentsService.createCheckin(id, uid);
   }
   // async createCheckin(
   //   @Param('id') id: number,
@@ -60,8 +62,11 @@ export class AppointmentsController {
 
   @Get()
   @ApiOperation({ summary: 'userId를 통해 메인에 띄울 약속 받아오기' })
-  async getMyAppointments() {
-    return this.appointmentsService.getMyAppointments(1);
+  async getMyAppointments(
+    @Headers('Authorization') authorization?: string,
+  ) {
+    const { id: uid } = await authorize(this.jwtService, authorization);
+    return this.appointmentsService.getMyAppointments(uid);
   }
   // async getMyAppointments(@Headers('Authorization') token: string) {
   //   if (!token) {

@@ -120,7 +120,7 @@ model Rankings {
 
   year              Int
   month             Int
-  accumulated_time  Int
+  accumulated_time  Int       @default(0)
 
   user        Users     @relation(fields: [uid], references: [id])
   group       Groups    @relation(fields: [gid], references: [id])
