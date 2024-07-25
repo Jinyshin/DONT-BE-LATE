@@ -19,6 +19,7 @@ const MonthlyRanking: React.FC = () => {
   const [ year, setYear ] = useState(0);
   const [ month, setMonth ] = useState(0);
   const [ token, setToken ] = useState('');
+  const [ myRank, setMyRank ] = useState(0);
   const [ rankings, setRankings ] = useState<Ranking[]>([]);
 
   const monthWhenCalled = new Date();
@@ -56,13 +57,25 @@ const MonthlyRanking: React.FC = () => {
           headers: { 'Authorization': `Bearer ${accessToken}` }
         }
       )
-      console.log(data);
+      const { nickname } = JSON.parse(
+        decodeURIComponent(
+          escape(
+            atob(accessToken.split('.')[1] ?? '{}')
+          )
+        )
+      );
       const rankings = data
         .rankings
-        .map((r) => ({
-          name: r.user.nickname,
-          time: r.accumulated_time / 3600
-        }));
+        .map((r, i) => {
+          if (r.user.nickname === nickname) {
+            setMyRank(i + 1);
+          }
+
+          return {
+            name: r.user.nickname,
+            time: r.accumulated_time / 3600
+          };
+        });
 
       setYear(year);
       setMonth(month);
@@ -85,7 +98,7 @@ const MonthlyRanking: React.FC = () => {
       </MonthSelectorWrapper>
       <Card>
         <CardTitle>이번 달 지각 시간</CardTitle>
-        <MyRank>내 등수 0등</MyRank>
+        <MyRank>내 등수 {myRank}등</MyRank>
         <RankingList rankings={rankings} />
       </Card>
       <GroupBottomNavigation activeTab="랭킹" groupId={params?.id as string} />
