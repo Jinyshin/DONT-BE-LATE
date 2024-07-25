@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { GetGroupAppointmentDto } from './dto/get-group-appointments.dto';
+import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
 import { Appointment } from './entities/appointment.entity';
 import {Participant} from 'src/users/entities/participant.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -87,6 +88,79 @@ export class AppointmentsService {
       participants: appointment.users.map((user) => user.user.profile_url),
       checked_in: appointment.checkins.length > 0,
     }));
+  }
+
+  async findDetail(aid: number):Promise<GetAppointmentDetailDto>{
+    //todo: get arival of time
+    try
+    {const appointment= await this.prisma.appointments.findUnique({
+      where:{
+        is_deleted: false,
+        id: aid,
+      },
+      select:{
+        title: true,
+        meet_at: true,
+        penalty: true,
+        users: { //Participants[]
+          select:{
+            uid: true,
+            is_deleted: true,//확인하기
+            user:{
+              select:{
+                nickname: true,
+              }
+            }
+          }
+        },
+        checkins:{
+          select:{
+            created_at: true,
+            is_deleted: true,
+            aid: true,
+            uid: true,
+          }
+        }
+      }
+    });
+    const {title, meet_at, penalty, users: participants, checkins}=appointment;
+    const earlycheckins:{name:string, latency: number}[]=[];
+    const latecheckins: {name:string, latency:number}[]=[];
+    const incompletecheckins: {name:string}[]=[];
+    const validPart= participants.filter(p=> !p.is_deleted);
+
+    for(let i=0; i<validPart.length; i++){
+      const participant=validPart[i];
+      const thecheckin= checkins.find(c=> c.uid== participant.uid);
+      if(!thecheckin || thecheckin.is_deleted){
+        incompletecheckins.push({name: participant.user.nickname});
+      }
+      else{
+        const latency= (new Date(thecheckin.created_at).getTime() - new Date(appointment.meet_at).getTime()) / 1000;
+        if(latency>0){
+          latecheckins.push({name: participant.user.nickname, latency: latency});
+        }
+        else{
+          earlycheckins.push({name: participant.user.nickname, latency: latency});
+        }
+      }
+    }
+
+    earlycheckins.sort((a,b)=> a.latency-b.latency);
+    latecheckins.sort((a,b)=> b.latency-a.latency);
+    incompletecheckins.sort((a,b)=> a.name.localeCompare(b.name));
+
+    return{
+      title: title,
+      penalty: penalty,
+      latecheckins: latecheckins,
+      earlycheckins: earlycheckins,
+      incompletecheckins: incompletecheckins
+    };
+  } catch(error){
+    console.error(error);
+    throw new Error('Failed to fetch appointment details');
+  }
   }
 
   findOne(id: number) {

@@ -3,6 +3,7 @@ import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ApiTags,ApiOperation } from '@nestjs/swagger';
 import {PatchAppointmentDto} from './dto/patch-appointment.dto';
+import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
 
 @Controller('api/v1/appointments')
 @ApiTags('Appointments')
@@ -38,10 +39,10 @@ export class AppointmentsController {
   //   return this.appointmentsService.getMyAppointments(userId);
   // }
 
-  @Get(':id')
+  @Get(':aid')
   @ApiOperation({ summary: '약속 상세 조회' })
-  findOne(@Param('id') id: string) {
-    return this.appointmentsService.findOne(+id);
+  findOne(@Param('aid') id: string): Promise<GetAppointmentDetailDto>{
+    return this.appointmentsService.findDetail(+id);
   }
 
   @Delete(':id')
