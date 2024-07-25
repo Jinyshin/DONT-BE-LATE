@@ -50,7 +50,7 @@ export class GroupsController {
       id,
     );
   }
-  // TODO: 주석 해제 후 토큰 추가`
+  // TODO: 주석 해제 후 토큰 추가
   // async createGroupMember(
   //   @Body() createGroupMemberDto: CreateGroupMemberDto,
   //   @Headers('Authorization') token: string,
