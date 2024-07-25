@@ -14,8 +14,9 @@ import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ApiTags,ApiOperation } from '@nestjs/swagger';
 import {PatchAppointmentDto} from './dto/patch-appointment.dto';
-import { CheckinResponseDto } from './dto/checkin-response.dto';
+import { authorize } from 'src/utils/jwt-auth';
 import { JwtService } from '@nestjs/jwt';
+import { CheckinResponseDto } from './dto/checkin-response.dto';
 import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
 @Controller('api/v1/appointments')
 @ApiTags('Appointments')
@@ -91,15 +92,13 @@ export class AppointmentsController {
 
   @Patch(':aid')
   @ApiOperation({ summary: 'aid와 참/불참을 받아 업데이트' })
-  updateParticipants(
+  async updateParticipants(
     @Param('aid') aid: string,
     @Body() patchAppointmentDto: PatchAppointmentDto,
-  ) {
-    const userId = 2;
-    return this.appointmentsService.updateParticipants(
-      userId,
-      parseInt(aid),
-      patchAppointmentDto.isParticipating,
-    );
+    @Headers('Authorization') authorization?: string,
+  ){
+    const { id: uid } = await authorize(this.jwtService, authorization);
+
+    return this.appointmentsService.updateParticipants(uid, parseInt(aid), patchAppointmentDto.isParticipating);
   }
 }

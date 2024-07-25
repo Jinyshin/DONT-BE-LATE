@@ -279,14 +279,15 @@ export class AppointmentsService {
     return appointments.map(appointment => {
       // Filter participants who are not deleted
       const activeParticipants = appointment.users.filter(participant => !participant.is_deleted);
-      
+
       // Get profile URLs of active participants
       const profileUrls = activeParticipants.map(participant => participant.user.profile_url);
-      
+
       // Check if the user has participated
       const participated = activeParticipants.some(participant => participant.uid === uid);
 
       return {
+        id: appointment.id,
         title: appointment.title,
         meet_at: appointment.meet_at,
         location: appointment.location,

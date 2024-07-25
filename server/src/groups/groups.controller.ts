@@ -113,11 +113,13 @@ export class GroupsController {
   }
 
   @Get(':gid/appointments')
-  @ApiOperation({ summary: '그룹 내 모든 약속' })
-  findAllAppointments(
+  @ApiOperation({summary: '그룹 내 모든 약속'})
+  async findAllAppointments(
     @Param('gid') gid: string,
-  ): Promise<GetGroupAppointmentDto[]> {
-    const userId = 1;
-    return this.appointmentsService.findAllAppByGroup(parseInt(gid), userId);
+    @Headers('Authorization') authorization?: string,
+  ):Promise<GetGroupAppointmentDto[]>{
+    const { id: uid } = await authorize(this.jwtService, authorization);
+
+    return await this.appointmentsService.findAllAppByGroup(parseInt(gid),uid);
   }
 }

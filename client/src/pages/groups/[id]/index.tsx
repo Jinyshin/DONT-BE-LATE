@@ -10,49 +10,91 @@ import FloatingButton from '../../../components/FloatingButton';
 import CreateAppointmentModal from '../../../components/Modal/CreateAppointmentModal';
 import axios from 'axios';
 
-type Group = ReturnType<typeof getGroupById>;
-type Appointment = Group['appointments'][number];
+// type Group = ReturnType<typeof getGroupById>;
+// type Appointment = Group['appointments'][number];
+type Appointment = {
+  id: number,
+  title: string,
+  meet_at: string,
+  location: string,
+  profileurl: string[],
+  participated: boolean,
+}
+
 export default function Group() {
   const params = useParams<{ id: string }>();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isModalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    const getGroupInfo = async (id: number) => {
+    const callback = async () => {
+      if (!params?.id) {
+        return;
+      }
+
+      const { id: gid } = params;
+      const token = localStorage.getItem('accessToken');
+
       try {
-        const { appointments } = await getGroupById(id);
+        type Response = Appointment[];
+        const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups/${gid}/appointments`;
+        const { data: appointments } = await axios.get<Response>(
+          url,
+          {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }
+        );
+
+        console.log(appointments);
+
         setAppointments(appointments);
-      } catch (e) {}
+      } catch (e) {
+        console.error(e);
+      }
     };
 
-    if (params != null) {
-      const { id } = params;
-      getGroupInfo(parseInt(id));
-    }
+    callback();
   }, [params]);
 
   const id = parseInt(params?.id);
-  const now = Date.now() / 1000;
-  const toggleIsAccepted = (aid: number) => async () => {
-    const toggledAppointments = appointments.map((e) => {
-      if (e.id === aid) {
-        return {
-          ...e,
-          isAccepted: !e.isAccepted,
-        };
-      } else {
-        return e;
-      }
-    });
-    alert('toggled');
+  const now = new Date().toISOString();
+  // const now = Date.now() / 1000;
+  const toggleIsAccepted = (aid: number) => (e: any) => {
+    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments/${aid}`;
+    const token = localStorage.getItem('accessToken');
 
-    setAppointments(toggledAppointments);
+    axios.patch(
+      url,
+      {
+        isParticipating: !appointments.find((e) => e.id === aid)?.participated
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      },
+    ).then(() => {
+      const toggledAppointments = appointments.map((e) => {
+        if (e.id === aid) {
+          return {
+            ...e,
+            participated: !e.participated,
+          };
+        } else {
+          return e;
+        }
+      });
+      alert('toggled');
+
+      setAppointments(toggledAppointments);
+    });
+    e.stopPropagation();
   };
   const currentAppointments = appointments.filter(
-    ({ datetime }) => datetime > now
+    ({ meet_at }) => meet_at > now
   );
   const previousAppointments = appointments.filter(
-    ({ datetime }) => datetime <= now
+    ({ meet_at }) => meet_at <= now
   );
 
   const handleFloatingButtonClick = () => {
@@ -130,7 +172,7 @@ const CurrentAppointments = ({
   h,
   appointments,
 }: {
-  h: (aid: number) => () => Promise<void>;
+  h: (aid: number) => (e: any) => void;
   appointments: Appointment[];
 }) => {
   return (
@@ -157,7 +199,7 @@ const PreviousAppointments = ({
   h,
   appointments,
 }: {
-  h: (aid: number) => () => Promise<void>;
+  h: (aid: number) => (e: any) => void;
   appointments: Appointment[];
 }) => {
   return (
@@ -184,10 +226,10 @@ const GroupAppointmentCard = ({
   h,
   appointment,
 }: {
-  h: (aid: number) => () => Promise<void>;
+  h: (aid: number) => (e: any) => void;
   appointment: Appointment;
 }) => {
-  const { id, title, datetime, location, isAccepted, participants } =
+  const { id, title, meet_at, location, participated, profileurl } =
     appointment;
 
   return (
@@ -200,12 +242,12 @@ const GroupAppointmentCard = ({
         </AppointmentCardToolbox>
       </AppointmentCardHeader>
       <AppointmentBody>
-        <AppointmentParticipants participants={participants} />
+        <AppointmentParticipants participants={profileurl} />
         <AppointmentLocation>{location}</AppointmentLocation>
         <AppointmentDatetime>
-          {new Date(datetime * 1000).toISOString()}
+          {meet_at}
         </AppointmentDatetime>
-        {isAccepted ? (
+        {participated ? (
           <AppointmentDeclineButton h={h(id)} />
         ) : (
           <AppointmentAcceptButton h={h(id)} />
@@ -218,7 +260,7 @@ const GroupAppointmentCard = ({
 const AppointmentParticipants = ({
   participants,
 }: {
-  participants: Appointment['participants'];
+  participants: Appointment['profileurl'];
 }) => {
   const AppointmentParticipantProfiles = styled.div`
     display: flex;
@@ -240,16 +282,16 @@ const AppointmentParticipants = ({
 
   return (
     <AppointmentParticipantProfiles>
-      {participants.map(({ profileUrl }, i) => (
+      {participants.map((url, i) => (
         <AppointmentParticipantProfileImageContainer key={i} idx={i}>
-          <Image src={profileUrl} alt="" width={32} height={32} />
+          <Image src={url || '/assets/default-profile.png'} alt="" width={32} height={32} />
         </AppointmentParticipantProfileImageContainer>
       ))}
     </AppointmentParticipantProfiles>
   );
 };
 
-const AppointmentAcceptButton = ({ h }: { h: () => Promise<void> }) => {
+const AppointmentAcceptButton = ({ h }: { h: (e: any) => void }) => {
   const AcceptButton = styled.button`
     margin-top: 1rem;
     background-color: ${({ theme }) => theme.colors.primary};
@@ -269,7 +311,7 @@ const AppointmentAcceptButton = ({ h }: { h: () => Promise<void> }) => {
   return <AcceptButton onClick={h}>참석</AcceptButton>;
 };
 
-const AppointmentDeclineButton = ({ h }: { h: () => Promise<void> }) => {
+const AppointmentDeclineButton = ({ h }: { h: (e: any) => void }) => {
   const DeclineButton = styled.button`
     margin-top: 1rem;
     background-color: ${({ theme }) => theme.colors.warning};
@@ -302,6 +344,7 @@ const Content = styled.div`
 `;
 
 const Summary = styled.summary`
+  cursor: pointer;
   list-style: none;
 `;
 
@@ -389,75 +432,75 @@ const GroupBottomNavigationPlaceholder = styled.div`
   height: 63px;
 `;
 
-const getGroupById = (id: number) => {
-  const generateAppointments = (aid: number) => {
-    const generateDatetime = () => {
-      const datetimes = [
-        Date.parse('2024-07-13T11:00:00') / 1000,
-        Date.parse('2024-07-15T12:00:00') / 1000,
-        Date.parse('2024-07-17T13:00:00') / 1000,
-        Date.parse('2024-07-19T12:00:00') / 1000,
-        Date.parse('2024-07-21T16:00:00') / 1000,
-        Date.parse('2024-07-23T15:00:00') / 1000,
-        Date.parse('2024-07-25T18:00:00') / 1000,
-        Date.parse('2024-07-27T17:00:00') / 1000,
-        Date.parse('2024-07-29T15:00:00') / 1000,
-      ];
+// const getGroupById = (id: number) => {
+//   const generateAppointments = (aid: number) => {
+//     const generateDatetime = () => {
+//       const datetimes = [
+//         Date.parse('2024-07-13T11:00:00') / 1000,
+//         Date.parse('2024-07-15T12:00:00') / 1000,
+//         Date.parse('2024-07-17T13:00:00') / 1000,
+//         Date.parse('2024-07-19T12:00:00') / 1000,
+//         Date.parse('2024-07-21T16:00:00') / 1000,
+//         Date.parse('2024-07-23T15:00:00') / 1000,
+//         Date.parse('2024-07-25T18:00:00') / 1000,
+//         Date.parse('2024-07-27T17:00:00') / 1000,
+//         Date.parse('2024-07-29T15:00:00') / 1000,
+//       ];
 
-      return datetimes[aid % datetimes.length];
-    };
-    const randomLoction = () => {
-      const locations = [
-        '신촌역',
-        '사당역 4번 출구',
-        '강남역 10번 출구',
-        '대학로 291 N1 김병호김삼열IT융합빌딩',
-      ];
-      const locationIdx = Math.floor(Math.random() * locations.length);
+//       return datetimes[aid % datetimes.length];
+//     };
+//     const randomLoction = () => {
+//       const locations = [
+//         '신촌역',
+//         '사당역 4번 출구',
+//         '강남역 10번 출구',
+//         '대학로 291 N1 김병호김삼열IT융합빌딩',
+//       ];
+//       const locationIdx = Math.floor(Math.random() * locations.length);
 
-      return locations[locationIdx];
-    };
-    const generateParticipants = (pid: number) => {
-      return {
-        id: pid,
-        name: `participant ${pid}`,
-        profileUrl:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ9ZbUUdXffCmlIetQlXY-CcYTSQcZRF1Wvw&s',
-      };
-    };
+//       return locations[locationIdx];
+//     };
+//     const generateParticipants = (pid: number) => {
+//       return {
+//         id: pid,
+//         name: `participant ${pid}`,
+//         profileUrl:
+//           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ9ZbUUdXffCmlIetQlXY-CcYTSQcZRF1Wvw&s',
+//       };
+//     };
 
-    const participants = Array.from(new Array(100).keys())
-      .sort((a, b) => Math.random() - 0.5)
-      .slice(0, 2 + Math.floor(Math.random() * 3))
-      .map(generateParticipants);
+//     const participants = Array.from(new Array(100).keys())
+//       .sort((a, b) => Math.random() - 0.5)
+//       .slice(0, 2 + Math.floor(Math.random() * 3))
+//       .map(generateParticipants);
 
-    return {
-      id: aid,
-      title: `Demo Group ${id} Appointment ${aid}`,
-      datetime: generateDatetime(),
-      location: randomLoction(),
-      isAccepted: Math.random() < 0.5,
-      participants,
-    };
-  };
+//     return {
+//       id: aid,
+//       title: `Demo Group ${id} Appointment ${aid}`,
+//       datetime: generateDatetime(),
+//       location: randomLoction(),
+//       isAccepted: Math.random() < 0.5,
+//       participants,
+//     };
+//   };
 
-  const appointments = Array.from(new Array(100).keys())
-    .sort((a, b) => Math.random() - 0.5)
-    .slice(0, 8)
-    .map(generateAppointments)
-    .sort((a, b) => {
-      if (a.datetime < b.datetime) {
-        return -1;
-      } else if (a.datetime == b.datetime) {
-        return 0;
-      } else {
-        return 1;
-      }
-    });
+//   const appointments = Array.from(new Array(100).keys())
+//     .sort((a, b) => Math.random() - 0.5)
+//     .slice(0, 8)
+//     .map(generateAppointments)
+//     .sort((a, b) => {
+//       if (a.datetime < b.datetime) {
+//         return -1;
+//       } else if (a.datetime == b.datetime) {
+//         return 0;
+//       } else {
+//         return 1;
+//       }
+//     });
 
-  return {
-    id: id,
-    name: `Demo Group Name ${id}`,
-    appointments,
-  };
-};
+//   return {
+//     id: id,
+//     name: `Demo Group Name ${id}`,
+//     appointments,
+//   };
+// };

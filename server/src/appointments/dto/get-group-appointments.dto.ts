@@ -4,6 +4,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class GetGroupAppointmentDto {
   @ApiProperty()
+  id: number;
+
+  @ApiProperty()
   title: string;
 
   @ApiProperty()

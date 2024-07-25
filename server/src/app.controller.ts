@@ -137,7 +137,7 @@ const data = {
       id: 10002,
       gid: 300,
       title: "몰입캠프 1분반 MT",
-      meet_at: new Date("2024-07-25T17:30:00"),
+      meet_at: new Date("2024-07-26T17:30:00"),
       location: "계룡산 등나무펜션",
       penalty: "고기 굽기 담당 or 장기 자랑"
     },
