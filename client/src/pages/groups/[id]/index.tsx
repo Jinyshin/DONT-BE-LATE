@@ -70,6 +70,7 @@ export default function Group() {
     appointmentPenalty: string
   ) => {
     try {
+      const token = localStorage.getItem('accessToken');
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments`,
         {
@@ -78,6 +79,11 @@ export default function Group() {
           location: appointmentLocation,
           meet_at: appointmentDate,
           penalty: appointmentPenalty,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         }
       );
       setModalOpen(false);
