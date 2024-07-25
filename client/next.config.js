@@ -8,7 +8,7 @@ module.exports = withPWA({
     styledComponents: true,
   },
   images: {
-    domains: ['encrypted-tbn0.gstatic.com'],
+    domains: ['encrypted-tbn0.gstatic.com', 'k.kakaocdn.net'],
   },
   env: {
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
