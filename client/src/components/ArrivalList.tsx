@@ -2,39 +2,72 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface ArrivalItemProps {
+interface CheckinProps {
   name: string;
-  time: number;
-  hasArrived: boolean;
+  latency : number;
 }
 
-interface ArrivalListProps {
-  arrivals: ArrivalItemProps[];
+interface CheckinListProps {
+  checkins: CheckinProps[];
 }
 
-const ArrivalList: React.FC<ArrivalListProps> = ({ arrivals }) => {
-  const formatTime =(time: number)=>{
-    const absTime= Math.abs(time);
-    const hours =Math.floor(absTime);
-    const minutes = Math.floor((absTime*60)%60);
-    const seconds = Math.floor((absTime*3600)%60);
-    return `${time < 0 ? '-':''}${hours}시간 ${minutes}분 ${seconds}초`;
-  }
+interface NotresolvedCheckinProps {
+  name: string;
+}
 
+interface NotresolvedCheckinListProps {
+  checkins: NotresolvedCheckinProps[];
+}
+
+const formatTime =(time: number)=>{
+  const absTime= Math.abs(time);
+  const hours =Math.floor(absTime/3600);
+  const minutes = Math.floor((absTime%3600)/60);
+  const seconds = Math.floor(absTime%60);
+  return `${time < 0 ? '-':''}${hours}시간 ${minutes}분 ${seconds}초`;
+}
+
+export const EarlyArrivalList: React.FC<CheckinListProps> = ({checkins}) => {
   return (
     <Container>
-      {arrivals.map((item, index) => (
-        <ArrivalItem key={index} hasArrived={item.hasArrived} onTime={item.time<=0}>
-          {item.hasArrived && 
-          (<Rank>
+      {checkins.map((item:{name: string, latency: number}, index: number) => (
+        <ArrivalItem key={index} hasArrived={true} onTime={true}>
+          <Rank>
             {index + 1}
-            {index + 1 === 1 && item.time<=0 && <Crown>👑</Crown>}
-            {index + 1 === 2 && item.time<=0 && <Medal>🥈</Medal>}
-            {index + 1 === 3 && item.time<=0 && <Medal>🥉</Medal>}
-          </Rank>)}
+            {index + 1 === 1 && <Crown>👑</Crown>}
+            {index + 1 === 2 && <Medal>🥈</Medal>}
+            {index + 1 === 3 && <Medal>🥉</Medal>}
+          </Rank>
           <Name>{item.name}</Name>
-          {item.hasArrived &&
-          <Time time={item.time} >{formatTime(item.time)}</Time>}
+          <Time time={item.latency} >{formatTime(item.latency)}</Time>
+        </ArrivalItem>
+      ))}
+    </Container>
+  );
+};
+
+export const LateArrivalList: React.FC<CheckinListProps> = ({checkins}) => {
+  return (
+    <Container>
+      {checkins.map((item:{name: string, latency: number}, index: number) => (
+        <ArrivalItem key={index} hasArrived={true} onTime={false}>
+          <Rank>
+            {index + 1}
+          </Rank>
+          <Name>{item.name}</Name>
+          <Time time={item.latency} >{formatTime(item.latency)}</Time>
+        </ArrivalItem>
+      ))}
+    </Container>
+  );
+};
+
+export const NotArrivalList: React.FC<NotresolvedCheckinListProps> = ({checkins}) => {
+  return (
+    <Container>
+      {checkins.map((item:{name: string}, index: number) => (
+        <ArrivalItem key={index} hasArrived={false} onTime={false}>
+          <Name>{item.name}</Name>
         </ArrivalItem>
       ))}
     </Container>
@@ -89,5 +122,3 @@ const Time = styled.div<{time: number}>`
 `;
 
 
-
-export default ArrivalList;

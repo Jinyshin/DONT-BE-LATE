@@ -1,97 +1,66 @@
 // src/pages/appointments/{aid}.tsx
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import GroupHeader from '../../../components/GroupHeader';
 import { useParams } from 'next/navigation';
-import ArrivalList from '../../../components/ArrivalList';
+import { EarlyArrivalList, LateArrivalList,NotArrivalList } from '../../../components/ArrivalList';
+import axios from 'axios';
+import AppointmentDetailHeader from '../../../components/AppointmentDetailHeader';
 
-interface Ranking {
-  name: string;
-  time: number;
-  hasArrived: boolean;
-}
-
-const app1Rankings: Ranking[] = [
-  { name: '김가가', time: -8.0533, hasArrived: true },
-  { name: '김나나', time: 9.2244, hasArrived: true },
-  { name: '김다다', time: 8.5155, hasArrived: true },
-  { name: '김라라', time: 7.3766, hasArrived: true },
-  { name: '김마마', time: 0, hasArrived: false },
-  { name: '김바바', time: 0, hasArrived: false },
-];
-
-const app2Rankings: Ranking[] = [
-  { name: '김가가', time: -5.0533, hasArrived: true },
-  { name: '김나나', time: -3.2244, hasArrived: true },
-  { name: '김다다', time: 3.5155, hasArrived: true },
-  { name: '김라라', time: 2.3766, hasArrived: true },
-  { name: '김마마', time: 1.5777, hasArrived: true },
-  { name: '김바바', time: 0, hasArrived: false },
-];
-
-const app3Rankings: Ranking[] = [
-  { name: '김가가', time: -6.0533, hasArrived: true },
-  { name: '김나나', time: -9.2244, hasArrived: true },
-  { name: '김다다', time: 0, hasArrived: false },
-  { name: '김라라', time: 0.3766, hasArrived: true },
-  { name: '김마마', time: 2.5777, hasArrived: true },
-  { name: '김바바', time: 4.0988, hasArrived: true },
-];
-
-const getRankingsByAppId = (appId: number): Ranking[] => {
-  if (appId === 1) {
-    return app1Rankings;
-  } else if (appId === 2) {
-    return app2Rankings;
-  } else if (appId === 3) {
-    return app3Rankings;
-  }
-  return [];
-};
 
 const AppointmentDetail: React.FC = () => {
   const params = useParams<{ aid: string }>();
   const [aid, setAid] = useState<number | null>(null);
-  const [rankings, setRankings] = useState<{ onTime: Ranking[]; late: Ranking[]; notArrived: Ranking[] }>({
-    onTime: [],
-    late: [],
-    notArrived: []
-  });
+
+  const [latecheckins, setLatecheckins]= useState<{name: string, latency: number}[]>([]);
+  const [earlycheckins, setEarlycheckins]= useState<{name: string, latency: number}[]>([]);
+  const [incompletecheckins, setIncompletecheckins]= useState<{name: string}[]>([]);
+
+  const [title, setTitle]= useState<string>("...");
+  const [penalty, setPenalty]= useState<string>("...");
 
   useEffect(() => {
     if (params) {
       const aidNumber = parseInt(params.aid);
       setAid(aidNumber);
-      const fetchedRankings = getRankingsByAppId(aidNumber);
-      setRankings({
-        onTime: fetchedRankings.filter((a) => a.hasArrived && a.time <= 0).sort((a, b) => a.time - b.time),
-        late: fetchedRankings.filter((a) => a.hasArrived && a.time > 0).sort((a, b) => a.time - b.time),
-        notArrived: fetchedRankings.filter((a) => !a.hasArrived),
-      });
+      const fetchedAppDetail =  async (aid: number) => {
+        try {
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments/${aid}`);
+          const data = response.data;
+
+          setTitle(data.title);
+          setPenalty(data.penalty);
+          setLatecheckins(data.latecheckins);
+          setEarlycheckins(data.earlycheckins);
+          setIncompletecheckins(data.incompletecheckins);
+        } catch (error) {
+          console.error('Failed to fetch appointment details:', error);
+        }
+      };
+      fetchedAppDetail(aidNumber);
     }
   }, [params]);
 
   return (
     <Container>
-      <GroupHeader title="약속 상세" />
+      <AppointmentDetailHeader title="약속 상세" />
       <AppointmentWrapper>
-        <AppointmentDisplay>밥 약속</AppointmentDisplay>
-        <Penalty>오늘의 벌칙: 1등에게 커피 사주기</Penalty>
+        <AppointmentDisplay>{title}</AppointmentDisplay>
+        <Penalty>오늘의 벌칙: {penalty}</Penalty>
       </AppointmentWrapper>
 
       <Card>
         <CardTitle>지각한 사람</CardTitle>
-        <ArrivalList arrivals={rankings.late} />
+        <LateArrivalList checkins={latecheckins} />
       </Card>
 
       <Card>
         <CardTitle>빨리 온 사람</CardTitle>
-        <ArrivalList arrivals={rankings.onTime} />
+        <EarlyArrivalList checkins={earlycheckins} />
       </Card>
 
       <Card>
         <CardTitle>아직 안 온 사람</CardTitle>
-        <ArrivalList arrivals={rankings.notArrived} />
+        <NotArrivalList checkins={incompletecheckins}/>
       </Card>
 
     </Container>
