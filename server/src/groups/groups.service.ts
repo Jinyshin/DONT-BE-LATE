@@ -104,17 +104,28 @@ export class GroupsService {
     };
   }
   // 모든 그룹 조회
-  async findAll(): Promise<Group[]> {
+  async findAll(uid: number): Promise<Group[]> {
     const groups = await this.prisma.groups.findMany({
-      where: { is_deleted: false },
+      where: {
+        is_deleted: false,
+        users: {
+          some: { uid }
+        }
+      },
     });
     return groups.map((group) => new Group(group));
   }
 
   // 특정 ID를 가진 그룹 조회
-  async findOne(id: number): Promise<Group> {
+  async findOne(id: number, uid: number): Promise<Group> {
     const group = await this.prisma.groups.findUnique({
-      where: { id },
+      where: {
+        id,
+        is_deleted: false,
+        users: {
+          some: { uid }
+        }
+      },
     });
 
     if (!group) {

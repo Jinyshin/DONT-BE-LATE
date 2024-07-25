@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags,ApiOperation } from '@nestjs/swagger';
+import {PatchAppointmentDto} from './dto/patch-appointment.dto';
 
 @Controller('api/v1/appointments')
 @ApiTags('Appointments')
@@ -47,4 +48,15 @@ export class AppointmentsController {
   remove(@Param('id') id: string) {
     return this.appointmentsService.remove(+id);
   }
+
+  @Patch(':aid')
+  @ApiOperation({summary:'aid와 참/불참을 받아 업데이트'})
+  updateParticipants(
+    @Param('aid') aid: string,
+    @Body() patchAppointmentDto: PatchAppointmentDto
+  ){
+    const userId=2;
+    return this.appointmentsService.updateParticipants(userId, parseInt(aid), patchAppointmentDto.isParticipating);
+  }
+
 }

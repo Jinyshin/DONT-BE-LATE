@@ -65,6 +65,7 @@ const SignupPage = () => {
 
   useEffect(() => {
     const callback = () => {
+      console.log(params);
       if (params.has("email")) {
         setEmail(params.get("email")!);
       }

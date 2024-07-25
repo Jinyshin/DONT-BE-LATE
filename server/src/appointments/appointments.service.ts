@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { Appointment } from './entities/appointment.entity';
+import {Participant} from 'src/users/entities/participant.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
+
 
 @Injectable()
 export class AppointmentsService {
@@ -92,5 +94,44 @@ export class AppointmentsService {
 
   remove(id: number) {
     return `This action removes a #${id} appointment`;
+  }
+
+  async updateParticipants(userId: number, aid:number, isParticipating:boolean): Promise<Participant>{
+    console.log("hi");
+    let participant = await this.prisma.participants.findUnique({
+      where: {
+        aid_uid: {
+          aid: aid,
+          uid: userId, },
+        },
+      });
+
+    if(participant){
+      participant = await this.prisma.participants.update({
+        where: {
+          aid_uid: {
+            aid:aid,
+            uid: userId,
+          },
+        },
+        data: {
+          is_deleted: !isParticipating,
+          updated_at: new Date(),
+        },
+      });
+    }
+    else{
+      participant = await this.prisma.participants.create({
+        data: {
+          aid: aid,
+          uid: userId,
+          is_deleted: !isParticipating,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      });
+    }
+
+    return participant as Participant;
   }
 }
