@@ -28,8 +28,8 @@ const GroupsPage: React.FC = () => {
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups`,
           {
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         const formattedGroups = response.data.map((group: any) => ({
@@ -72,8 +72,8 @@ const GroupsPage: React.FC = () => {
         },
         {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -101,8 +101,8 @@ const GroupsPage: React.FC = () => {
         },
         {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 

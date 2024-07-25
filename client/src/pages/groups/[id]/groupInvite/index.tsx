@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import ShareButton from '../../../../components/ShareButton';
@@ -6,12 +6,28 @@ import QRCodeGenerator from '../../../../components/QRCodeGenerator';
 import GroupHeader from '../../../../components/GroupHeader';
 import GroupBottomNavigation from '../../../../components/GroupBottomNavigation';
 import { useParams } from 'next/navigation';
+import axios from 'axios';
 
 const GroupInvite: React.FC = () => {
-  const groupId = useParams();
+  const groupId = useParams()?.id as string;
+  const [groupLink, setGroupLink] = useState<string>('');
 
-  // const groupLink = `https://google.com`; // 그룹 가입 링크로 동적 설정
-  const groupLink = `https://www.example.com/groups/${groupId?.id}/invite`; // 그룹 가입 링크로 동적 설정
+  useEffect(() => {
+    const fetchGroupLink = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups/${groupId}`
+        );
+        setGroupLink(response.data.participationLink);
+      } catch (error) {
+        console.error('Error fetching group link', error);
+      }
+    };
+
+    if (groupId) {
+      fetchGroupLink();
+    }
+  }, [groupId]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(groupLink).then(() => {
@@ -36,7 +52,7 @@ const GroupInvite: React.FC = () => {
   return (
     <Container>
       <GroupHeader title="친구 초대" />
-      <QRCodeGenerator url={groupLink} />
+      {groupLink && <QRCodeGenerator url={groupLink} />}
       <ButtonContainer>
         <ShareButton onClick={handleCopyLink} variant="secondary">
           링크 복사
@@ -53,7 +69,7 @@ const GroupInvite: React.FC = () => {
           됩니다.
         </span>
       </Description>
-      <GroupBottomNavigation activeTab="초대" groupId={groupId?.id as string} />
+      <GroupBottomNavigation activeTab="초대" groupId={groupId} />
     </Container>
   );
 };
