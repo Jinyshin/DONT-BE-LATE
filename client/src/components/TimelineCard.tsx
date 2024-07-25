@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FiShare2 } from 'react-icons/fi';
-import { IoMdMore } from 'react-icons/io';
+import { MdMoreHoriz, MdShare } from 'react-icons/md';
 import { handleShare } from '../utils/share';
 import AppointmentParticipants from './AppointmentParticipant';
+import confetti from 'canvas-confetti';
 
 interface TimelineCardProps {
   title: string;
@@ -25,31 +25,37 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
   checked,
   participants,
   onCheckIn,
-}) => (
-  <Card>
-    <CardHeader>
-      <CardTitle>{title}</CardTitle>
-      <IconsWrapper>
-        <ShareIcon onClick={() => handleShare(title, location, date)} />
-        <MoreIcon />
-      </IconsWrapper>
-    </CardHeader>
-    <CardContent>
-      <GroupName>{group}</GroupName>
-      <AppointmentParticipants participants={participants} />
-      <Location>장소: {location}</Location>
-      <DateTimeWrapper>
-        <span>일정: {date} </span>
-        <span>{time}</span>
-      </DateTimeWrapper>
-    </CardContent>
-    {checked ? (
-      <CheckedInButton>체크인한 약속입니다.</CheckedInButton>
-    ) : (
-      <CheckInButton onClick={onCheckIn}>도착 체크인</CheckInButton>
-    )}
-  </Card>
-);
+}) => {
+  const handleCheckIn = () => {
+    onCheckIn();
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <IconsWrapper>
+          <ShareIcon onClick={() => handleShare(title, location, date)} />
+          <MoreIcon />
+        </IconsWrapper>
+      </CardHeader>
+      <CardContent>
+        <GroupName>{group}</GroupName>
+        <AppointmentParticipants participants={participants} />
+        <Location>장소: {location}</Location>
+        <DateTimeWrapper>
+          <span>일정: {date} </span>
+          <span>{time}</span>
+        </DateTimeWrapper>
+      </CardContent>
+      {checked ? (
+        <CheckedInButton>체크인 완료</CheckedInButton>
+      ) : (
+        <CheckInButton onClick={handleCheckIn}>도착 체크인</CheckInButton>
+      )}
+    </Card>
+  );
+};
 
 const Card = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.grayscale.gray20};
@@ -81,7 +87,7 @@ const IconsWrapper = styled.div`
   align-items: center;
 `;
 
-const ShareIcon = styled(FiShare2)`
+const ShareIcon = styled(MdShare)`
   width: 22px;
   height: 22px;
   cursor: pointer;
@@ -92,7 +98,7 @@ const ShareIcon = styled(FiShare2)`
   }
 `;
 
-const MoreIcon = styled(IoMdMore)`
+const MoreIcon = styled(MdMoreHoriz)`
   width: 28px;
   height: 28px;
   cursor: pointer;

@@ -25,6 +25,7 @@ interface FormattedAppointment extends Appointment {
 export default function Home() {
   const [appointments, setAppointments] = useState<FormattedAppointment[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [checkinTime, setCheckinTime] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -53,8 +54,23 @@ export default function Home() {
     fetchAppointments();
   }, []);
 
-  const handleCheckIn = () => {
-    setIsModalOpen(true);
+  const handleCheckIn = async (aid: number) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/appointments/${aid}/checkin`
+      );
+      setCheckinTime(response.data.time_difference);
+      setAppointments((prevAppointments) =>
+        prevAppointments.map((appointment) =>
+          appointment.id === aid
+            ? { ...appointment, checked_in: true }
+            : appointment
+        )
+      );
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Error checking in:', error);
+    }
   };
 
   const onClose = () => {
@@ -75,13 +91,17 @@ export default function Home() {
               time={appointment.formattedTime}
               participants={appointment.participants}
               checked={appointment.checked_in}
-              onCheckIn={handleCheckIn}
+              onCheckIn={() => handleCheckIn(appointment.id)}
             />
           </TimelineCardWrapper>
         ))}
       </Content>
       <MainBottomNavigation activeTab="홈" />
-      <CheckinModal isOpen={isModalOpen} onClose={onClose} time={-3.234} />
+      <CheckinModal
+        isOpen={isModalOpen}
+        onClose={onClose}
+        time={checkinTime ?? 0}
+      />
     </Container>
   );
 }
