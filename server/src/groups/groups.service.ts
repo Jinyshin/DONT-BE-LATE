@@ -124,9 +124,6 @@ export class GroupsService {
       where: { id: groupId, is_deleted: false },
     });
 
-    console.log('외안대');
-    console.log(group);
-
     if (!group) {
       throw new NotFoundException(`Group with ID ${groupId} not found`);
     }
