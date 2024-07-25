@@ -1,62 +1,90 @@
 // src/pages/MonthlyRanking/index.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MonthSelector from '../../../../components/MonthSelector';
 import RankingList from '../../../../components/RankingList';
 import GroupBottomNavigation from '../../../../components/GroupBottomNavigation';
 import GroupHeader from '../../../../components/GroupHeader';
 import { useParams } from 'next/navigation';
+import axios from 'axios';
 
-interface Ranking {
+
+type Ranking = {
   name: string;
   time: number;
 }
 
-const julyRankings: Ranking[] = [
-  { name: '김가가', time: -58.0533 },
-  { name: '김나나', time: 39.2244 },
-  { name: '김다다', time: 38.5155 },
-  { name: '김라라', time: 27.3766 },
-  { name: '김마마', time: 17.5777 },
-  { name: '김바바', time: 13.0988 },
-];
-
-const juneRankings: Ranking[] = [
-  { name: '김가가', time: -58.0533 },
-  { name: '김나나', time: -39.2244 },
-  { name: '김다다', time: 38.5155 },
-  { name: '김라라', time: 27.3766 },
-  { name: '김마마', time: 17.5777 },
-  { name: '김바바', time: 13.0988 },
-];
-
-const augustRankings: Ranking[] = [
-  { name: '김가가', time: -16.0533 },
-  { name: '김나나', time: -9.2244 },
-  { name: '김다다', time: 30.5155 },
-  { name: '김라라', time: 30.3766 },
-  { name: '김마마', time: 22.5777 },
-  { name: '김바바', time: 4.0988 },
-];
-
-const getRankingsByMonth = (month: Date) => {
-  if (month.getMonth() === 6) {
-    return julyRankings;
-  } else if (month.getMonth() === 5) {
-    return juneRankings;
-  } else if (month.getMonth() === 7) {
-    return augustRankings;
-  }
-  return [];
-};
-
 const MonthlyRanking: React.FC = () => {
-  const groupId = useParams();
-  const monthWhenCalled=new Date();
-  const [currentMonth, setCurrentMonth] = useState(monthWhenCalled);
-  const sortedRankings = getRankingsByMonth(currentMonth).sort(
-    (a, b) => a.time - b.time
-  );
+  const params = useParams();
+  const [ year, setYear ] = useState(0);
+  const [ month, setMonth ] = useState(0);
+  const [ token, setToken ] = useState('');
+  const [ myRank, setMyRank ] = useState(0);
+  const [ rankings, setRankings ] = useState<Ranking[]>([]);
+
+  const monthWhenCalled = new Date();
+  const [ currentMonth, setCurrentMonth ] = useState(monthWhenCalled);
+
+  useEffect(() => {
+    const callback = async () => {
+      if (!params?.id) {
+        return;
+      }
+
+      const { id } = params;
+      // const year = new Date().getFullYear();
+      // const month = new Date().getMonth() + 1;
+      const year = 2024;
+      const month = currentMonth.getMonth() + 1;
+      const accessToken = localStorage.getItem('accessToken') ?? '';
+
+      type Response = {
+        rankings: {
+          user: {
+            nickname: string;
+            profile_url: string;
+          };
+          accumulated_time: number;
+          year: number;
+          month: number;
+        }[];
+      }
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups/${id}/ranking`
+      const { data } = await axios.get<Response>(
+        url,
+        {
+          params: { year, month },
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        }
+      )
+      const { nickname } = JSON.parse(
+        decodeURIComponent(
+          escape(
+            atob(accessToken.split('.')[1] ?? '{}')
+          )
+        )
+      );
+      const rankings = data
+        .rankings
+        .map((r, i) => {
+          if (r.user.nickname === nickname) {
+            setMyRank(i + 1);
+          }
+
+          return {
+            name: r.user.nickname,
+            time: r.accumulated_time / 3600
+          };
+        });
+
+      setYear(year);
+      setMonth(month);
+      setToken(accessToken);
+      setRankings(rankings);
+    };
+
+    callback();
+  }, [params, currentMonth]);
 
   return (
     <Container>
@@ -70,10 +98,10 @@ const MonthlyRanking: React.FC = () => {
       </MonthSelectorWrapper>
       <Card>
         <CardTitle>이번 달 지각 시간</CardTitle>
-        <MyRank>내 등수 0등</MyRank>
-        <RankingList rankings={sortedRankings} />
+        <MyRank>내 등수 {myRank}등</MyRank>
+        <RankingList rankings={rankings} />
       </Card>
-      <GroupBottomNavigation activeTab="랭킹" groupId={groupId?.id as string} />
+      <GroupBottomNavigation activeTab="랭킹" groupId={params?.id as string} />
     </Container>
   );
 };
