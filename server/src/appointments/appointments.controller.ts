@@ -12,13 +12,11 @@ import {
 } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { PatchAppointmentDto } from './dto/patch-appointment.dto';
+import { ApiTags,ApiOperation } from '@nestjs/swagger';
+import {PatchAppointmentDto} from './dto/patch-appointment.dto';
 import { CheckinResponseDto } from './dto/checkin-response.dto';
 import { JwtService } from '@nestjs/jwt';
-
-// TODO: JWT에서 userId 추출해서 전달하기
-
+import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
 @Controller('api/v1/appointments')
 @ApiTags('Appointments')
 export class AppointmentsController {
@@ -80,10 +78,10 @@ export class AppointmentsController {
   //   return this.appointmentsService.getMyAppointments(userId);
   // }
 
-  @Get(':id')
+  @Get(':aid')
   @ApiOperation({ summary: '약속 상세 조회' })
-  findOne(@Param('id') id: string) {
-    return this.appointmentsService.findOne(+id);
+  findOne(@Param('aid') id: string): Promise<GetAppointmentDetailDto>{
+    return this.appointmentsService.findDetail(+id);
   }
 
   @Delete(':id')
