@@ -11,6 +11,7 @@ import axios from 'axios';
 const GroupInvite: React.FC = () => {
   const groupId = useParams()?.id as string;
   const [groupLink, setGroupLink] = useState<string>('');
+  const [groupCode, setGroupCode] = useState<string>('');
 
   useEffect(() => {
     const fetchGroupLink = async () => {
@@ -18,7 +19,9 @@ const GroupInvite: React.FC = () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups/${groupId}`
         );
-        setGroupLink(response.data.participationLink);
+        const groupLink = response.data.participationLink;
+        setGroupLink(groupLink);
+        setGroupCode(groupLink.substring(groupLink.length - 6));
       } catch (error) {
         console.error('Error fetching group link', error);
       }
@@ -27,7 +30,7 @@ const GroupInvite: React.FC = () => {
     if (groupId) {
       fetchGroupLink();
     }
-  }, [groupId]);
+  }, [groupId, groupCode]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(groupLink).then(() => {
@@ -53,6 +56,7 @@ const GroupInvite: React.FC = () => {
     <Container>
       <GroupHeader title="친구 초대" />
       {groupLink && <QRCodeGenerator url={groupLink} />}
+      <div>그룹코드: {groupCode}</div>
       <ButtonContainer>
         <ShareButton onClick={handleCopyLink} variant="secondary">
           링크 복사
