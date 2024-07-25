@@ -8,37 +8,43 @@ import {
   UnauthorizedException,
   ForbiddenException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateGroupMemberDto } from './dto/create-groupmember.dto';
 import { GroupMemberResponseDto } from './dto/group-member-response.dto';
+import { authorize } from 'src/utils/jwt-auth';
 import { AppointmentsService } from '../appointments/appointments.service';
 import { GetGroupAppointmentDto} from '../appointments/dto/get-group-appointments.dto'
 
 @Controller('api/v1/groups')
 @ApiTags('Groups')
 export class GroupsController {
-  constructor(
-    private readonly groupsService: GroupsService,
-    private readonly appointmentsService: AppointmentsService,    
-  ) {}
+  constructor(private readonly groupsService: GroupsService,
+    private readonly jwtService: JwtService,
+    private readonly appointmentsService: AppointmentsService, e) {}
 
   @Post()
   @ApiOperation({ summary: '새 그룹 생성' })
-  async create(@Body() createGroupDto: CreateGroupDto) {
-    // TODO: JWT에서 userId 추출해서 전달하기
-    return this.groupsService.create(createGroupDto, 1);
+  async create(
+    @Body() createGroupDto: CreateGroupDto,
+    @Headers('Authorization') authorization?: string,
+  ) {
+    const { id } = await authorize(this.jwtService, authorization);
+    return this.groupsService.create(createGroupDto, id);
   }
 
   @Post('/join')
   @ApiOperation({ summary: '그룹 참여' })
   async createGroupMember(
     @Body() createGroupMemberDto: CreateGroupMemberDto,
+    @Headers('Authorization') authorization?: string,
   ): Promise<GroupMemberResponseDto> {
+    const { id } = await authorize(this.jwtService, authorization);
     return this.groupsService.createGroupMember(
       createGroupMemberDto.groupCode,
-      3,
+      id,
     );
   }
   // TODO: 주석 해제 후 토큰 추가`
@@ -69,14 +75,19 @@ export class GroupsController {
 
   @Get()
   @ApiOperation({ summary: '전체 그룹 목록 조회' })
-  findAll() {
-    return this.groupsService.findAll();
+  async findAll(@Headers('Authorization') authorization?: string) {
+    const { id } = await authorize(this.jwtService, authorization);
+    return await this.groupsService.findAll(id);
   }
 
   @Get(':gid')
   @ApiOperation({ summary: '그룹 초대 링크' })
-  findOne(@Param('gid') id: string) {
-    return this.groupsService.findOne(+id);
+  async findOne(
+    @Param('gid') id: string,
+    @Headers('Authorization') authorization?: string,
+  ) {
+    const { id: uid } = await authorize(this.jwtService, authorization);
+    return this.groupsService.findOne(+id, uid);
   }
 
   @Get(':gid/appointments')

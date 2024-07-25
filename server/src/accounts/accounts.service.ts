@@ -17,7 +17,7 @@ type KakaoIdToken = {
   email: string
 };
 
-type TokenPayload = {
+export type TokenPayload = {
   id: number,
   email: string,
   nickname: string,
