@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { MdClose } from 'react-icons/md';
+import confetti from 'canvas-confetti';
 
 interface CheckinModalProps {
   isOpen: boolean;
@@ -8,18 +9,40 @@ interface CheckinModalProps {
   time: number;
 }
 
-const CheckinModal: React.FC<CheckinModalProps> = ({ isOpen, onClose, time }) => {
-  const [groupName, setGroupName] = useState('');
-  const isLate: boolean = time>0;
-  const formatTime =(time: number)=>{
-    const absTime= Math.abs(time);
-    const hours =Math.floor(absTime);
-    const minutes = Math.floor((absTime*60)%60);
-    const seconds = Math.floor((absTime*3600)%60);
-    return `${hours}시간 ${minutes}분 ${seconds}초`;
-  }
-  const formattedTime=formatTime(time);
+const CheckinModal: React.FC<CheckinModalProps> = ({
+  isOpen,
+  onClose,
+  time,
+}) => {
+  const isLate: boolean = time > 0;
 
+  const formatTime = (time: number) => {
+    const absTime = Math.abs(time);
+    const hours = Math.floor(absTime / 3600);
+    const minutes = Math.floor((absTime % 3600) / 60);
+    const seconds = Math.floor(absTime % 60);
+    let formattedTime = '';
+    if (hours > 0) formattedTime += `${hours}시간 `;
+    if (minutes > 0) formattedTime += `${minutes}분 `;
+    formattedTime += `${seconds}초`;
+
+    return formattedTime;
+  };
+
+  const formattedTime = formatTime(time);
+
+  useEffect(() => {
+    if (isOpen && !isLate) {
+      confetti({
+        particleCount: 100,
+        spread: 80,
+        origin: { y: 0.4 },
+        angle: 90,
+        gravity: 3,
+        zIndex: 10000,
+      });
+    }
+  }, [isOpen, isLate]);
 
   if (!isOpen) return null;
 
@@ -32,11 +55,20 @@ const CheckinModal: React.FC<CheckinModalProps> = ({ isOpen, onClose, time }) =>
             <MdClose size={24} />
           </CloseIcon>
         </Header>
-        <Content color={isLate? '#F22E2E': '#5581D9'}>
-          {isLate?
-          `${formattedTime} 늦게 도착하셨습니다.`
-          :`${formattedTime} 일찍 도착하셨습니다.`
-          }
+        <Content>
+          {isLate ? (
+            <Message>
+              <FormattedTime color="#F22E2E">{formattedTime}</FormattedTime>{' '}
+              <br />
+              늦게 도착했어요 😓
+            </Message>
+          ) : (
+            <Message>
+              <FormattedTime color="#5581D9">{formattedTime}</FormattedTime>{' '}
+              <br />
+              빨리 도착했어요 🤩
+            </Message>
+          )}
         </Content>
         <Footer>
           <CloseButton onClick={onClose}>닫기</CloseButton>
@@ -89,31 +121,24 @@ const CloseIcon = styled.button`
   padding: 5px;
 `;
 
-const Content = styled.div<{color: string}>`
+const Content = styled.div`
   margin-top: 20px;
-  color: ${(props)=>props.color};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
-const Label = styled.label`
-  display: block;
-  margin-bottom: 10px;
-  color: #333;
-  font-size: 14px;
+const Message = styled.p`
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-align: center;
+  color: black;
 `;
 
-const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  color: #333;
-  box-sizing: border-box;
-  transition: border 0.2s;
-
-  &:focus {
-    border-color: #5581d9;
-    outline: none;
-  }
+const FormattedTime = styled.span<{ color: string }>`
+  color: ${(props) => props.color};
 `;
 
 const Footer = styled.div`
@@ -129,16 +154,6 @@ const CloseButton = styled.button`
   border-radius: 15px;
   padding: 10px 20px;
   cursor: pointer;
-`;
-
-const SubmitButton = styled.button`
-  background-color: #5581d9;
-  color: white;
-  border: none;
-  border-radius: 15px;
-  padding: 10px 20px;
-  cursor: pointer;
-  margin-left: 10px;
 `;
 
 export default CheckinModal;
