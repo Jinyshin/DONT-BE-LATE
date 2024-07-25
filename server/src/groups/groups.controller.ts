@@ -23,7 +23,8 @@ import { GetGroupAppointmentDto} from '../appointments/dto/get-group-appointment
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService,
     private readonly jwtService: JwtService,
-    private readonly appointmentsService: AppointmentsService, e) {}
+    private readonly appointmentsService: AppointmentsService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: '새 그룹 생성' })
