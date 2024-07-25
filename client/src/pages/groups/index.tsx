@@ -23,8 +23,14 @@ const GroupsPage: React.FC = () => {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
+        const token = localStorage.getItem('accessToken');
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
         );
         const formattedGroups = response.data.map((group: any) => ({
           id: group.id,
@@ -58,10 +64,16 @@ const GroupsPage: React.FC = () => {
 
   const handleCreateGroup = async (groupName: string) => {
     try {
+      const token = localStorage.getItem('accessToken');
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups`,
         {
           name: groupName,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         }
       );
 
@@ -81,10 +93,16 @@ const GroupsPage: React.FC = () => {
 
   const handleJoinGroup = async (groupCode: string) => {
     try {
+      const token = localStorage.getItem('accessToken');
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/groups/join`,
         {
           groupCode: groupCode,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         }
       );
 
