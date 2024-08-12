@@ -1,4 +1,4 @@
-# 그만 좀 늦자 - DONT BE LATE
+# 그만 좀 늦자 - DON'T BE LATE
 
 ‘그만 좀 늦자’는 늘 ‘5분 안에 갈게!’를 외치는 프로 늦참러들을 위한 서비스입니다.
 
@@ -8,9 +8,9 @@
 
 저희의 웹 애플리케이션은 별도의 설치 없이도 모든 기기에서 접근할 수 있도록 설계되었습니다. iOS, Android, Windows, Mac 등 다양한 플랫폼에서 최적의 성능을 발휘하는 프로그레시브 웹앱(PWA)으로 개발되어, 언제 어디서나 모바일로 간편하게 이용할 수 있습니다.
 
-# 기능 소개
+# ✅ 기능 소개
 
-## ✅ 회원가입, 로그인
+## 1. 회원가입, 로그인
 
 - 카카오 또는 자체 이메일  회원가입을 통해 회원 정보를 관리합니다.
 - 그룹과 약속에 참여해야하는 서비스이므로 로그인 및 회원가입 과정은 필수입니다.
@@ -22,9 +22,9 @@
   </tr>
 </table>
 
-## ✅ 메인 메뉴
+## 2. 메인 메뉴
 
-### 홈 탭
+### 2.1. 홈 탭
 
 - 로그인 후 처음 보이는 화면으로, 가장 가까운 시일의 약속을 보여줍니다.
 - 체크인 버튼을 통해 도착 시간을 남길 수 있으며, 시각이 기록되어 월간 랭킹 산출에 반영됩니다.
@@ -38,7 +38,7 @@
   </table>
 </div>
 
-### 그룹 탭
+### 2.2. 그룹 탭
 
 - 나의 그룹을 모두 조회할 수 있습니다.
 - 우측 하단의 플로팅 버튼을 통해 새로운 그룹을 만들거나 새로운 그룹에 참여할 수 있습니다.
@@ -52,11 +52,11 @@
   </table>
 </div>
 
-## ✅ 그룹별 메뉴
+## 3. 그룹별 메뉴
 
 - 그룹 탭에서 특정 그룹을 선택하면 해당 그룹의 상세 정보를 조회할 수 있는 그룹별 메뉴로 이동합니다.
 
-### 약속 탭
+### 3.1. 약속 탭
 
 - 그룹별 페이지의 기본 화면으로, 해당 그룹의 모든 약속들을 조회할 수 있습니다.
 - 토글을 통해 이전 혹은 앞으로의 약속들을 모아서 펼쳐볼 수 있습니다.
@@ -74,7 +74,7 @@
   </table>
 </div>
 
-### 랭킹 탭
+### 3.2. 랭킹 탭
 
 - 그룹 멤버들의 누적된 지각 시간으로 산출된 월별 랭킹을 조회할 수 있습니다.
 - 기간 선택 및 이동 버튼과 드롭다운을 제공하여 현 시점으로부터 이전 6개월간의 랭킹을 확인할 수 있습니다.
@@ -86,7 +86,7 @@
   </table>
 </div>
 
-### 초대 탭
+### 3.3. 초대 탭
 
 - 새로운 그룹 멤버를 초대하기 위한 탭입니다. 초대 링크와 QR코드를 제공하여, 새로운 사용자에게 간편하게 공유할 수 있습니다.
 
@@ -99,7 +99,21 @@
   </table>
 </div>
 
-# API
+# ✅ 서비스 아키텍처
+<img width="8069" alt="dontbelate-service-architecture" src="https://github.com/user-attachments/assets/038e5d4c-3ca7-4020-b5e3-6dd29a1f2b98">
+
+# ✅ 기술 스택
+- FE
+  - Next.js
+  - styled-components
+  - PWA (Progressive Web App)
+- BE
+  - Nest.js
+  - Prisma
+  - PostgreSQL
+  - AWS EC2
+
+# ✅ API
 | Tag | Endpoint | Method |
 | --- | --- | --- |
 | 회원 | /api/v1/accounts/signin | POST |
@@ -117,22 +131,11 @@
 | 그룹 | /api/v1/groups/{gid}/ranking | GET |
 | 그룹 | /api/v1/appointments/{aid} | GET |
 
-# DB
+# ✅ DB
 ![image](https://github.com/user-attachments/assets/e262e535-998a-4589-b793-97b5518d71bd)
 
-# Team
+
+# 팀 소개
 |<img src="https://avatars.githubusercontent.com/u/87403267?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/73810929?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/173992725?v=4" width="150" height="150"/>|
 |:-:|:-:|:-:|
 |Jinyshin<br/>[@Jjinyshin](https://github.com/Jjinyshin)|unknownbox<br/>[@Unknown-Box](https://github.com/Unknown-Box)|[@yunseopark-kaist](https://github.com/yunseopark-kaist)|
-
-
-# Tech Stack
-- FE
-  - Next.js
-  - styled-components
-  - PWA (Progressive Web App)
-- BE
-  - Nest.js
-  - Prisma
-  - PostgreSQL
-  - AWS EC2
