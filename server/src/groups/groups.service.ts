@@ -29,7 +29,7 @@ export class GroupsService {
     }
 
     // 그룹 생성
-    const group = await this.prisma.groups.create({
+    const group = await this.prisma.group.create({
       data: {
         name: createGroupDto.name,
         participation_code: participationCode,
@@ -37,7 +37,7 @@ export class GroupsService {
     });
 
     // GroupMember 테이블에 데이터 추가
-    await this.prisma.groupMembers.create({
+    await this.prisma.groupMember.create({
       data: {
         gid: group.id,
         uid: userId,
@@ -52,7 +52,7 @@ export class GroupsService {
   private async isParticipationCodeExist(
     participationCode: string,
   ): Promise<boolean> {
-    const count = await this.prisma.groups.count({
+    const count = await this.prisma.group.count({
       where: { participation_code: participationCode },
     });
     return count > 0;
@@ -73,7 +73,7 @@ export class GroupsService {
     groupCode: string,
     userId: number,
   ): Promise<GroupMemberResponseDto> {
-    const group = await this.prisma.groups.findUnique({
+    const group = await this.prisma.group.findUnique({
       where: { participation_code: groupCode, is_deleted: false },
     });
 
@@ -81,7 +81,7 @@ export class GroupsService {
       throw new ForbiddenException('Invalid group code or group is deleted');
     }
 
-    const groupMember = await this.prisma.groupMembers.create({
+    const groupMember = await this.prisma.groupMember.create({
       data: {
         gid: group.id,
         uid: userId,
@@ -89,7 +89,7 @@ export class GroupsService {
       },
     });
 
-    const updatedGroup = await this.prisma.groups.update({
+    const updatedGroup = await this.prisma.group.update({
       where: { id: group.id },
       data: { num_participants: { increment: 1 } },
     });
@@ -107,7 +107,7 @@ export class GroupsService {
 
   // 모든 그룹 조회
   async findAll(uid: number): Promise<Group[]> {
-    const groups = await this.prisma.groups.findMany({
+    const groups = await this.prisma.group.findMany({
       where: {
         is_deleted: false,
         users: {
@@ -120,7 +120,7 @@ export class GroupsService {
 
   // 그룹 초대 링크 조회
   async getGroupInviteLink(groupId: number) {
-    const group = await this.prisma.groups.findUnique({
+    const group = await this.prisma.group.findUnique({
       where: { id: groupId, is_deleted: false },
     });
 
@@ -134,13 +134,13 @@ export class GroupsService {
   }
 
   async isUserIn(uid: number, gid: number) {
-    return !!(await this.prisma.groupMembers.findUnique({
+    return !!(await this.prisma.groupMember.findUnique({
       where: { gid_uid: { gid, uid }, is_deleted: false },
     }));
   }
 
   async getRanking(id: number, year: number, month: number) {
-    const { rankings } = await this.prisma.groups.findUnique({
+    const { rankings } = await this.prisma.group.findUnique({
       where: { id, is_deleted: false },
       select: {
         rankings: {
@@ -171,3 +171,4 @@ export class GroupsService {
     return { rankings };
   }
 }
+

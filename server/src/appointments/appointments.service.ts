@@ -7,7 +7,7 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { GetGroupAppointmentDto } from './dto/get-group-appointments.dto';
 import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
 import { Appointment } from './entities/appointment.entity';
-import {Participant} from 'src/users/entities/participant.entity';
+import { Participant } from 'src/users/entities/participant.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CheckinResponseDto } from './dto/checkin-response.dto';
 
@@ -17,7 +17,7 @@ export class AppointmentsService {
 
   async create(createAppointmentDto: CreateAppointmentDto, userId: number) {
     try {
-      const appointment = await this.prisma.appointments.create({
+      const appointment = await this.prisma.appointment.create({
         data: {
           ...createAppointmentDto,
           meet_at: new Date(createAppointmentDto.meet_at),
@@ -27,7 +27,7 @@ export class AppointmentsService {
         },
       });
 
-      await this.prisma.participants.create({
+      await this.prisma.participant.create({
         data: {
           aid: appointment.id,
           uid: userId,
@@ -46,7 +46,7 @@ export class AppointmentsService {
 
   async createCheckin(aid: number, uid: number): Promise<CheckinResponseDto> {
     // 이미 체크인 되어있는지 확인
-    const existingCheckin = await this.prisma.checkins.findUnique({
+    const existingCheckin = await this.prisma.checkin.findUnique({
       where: { aid_uid: { aid, uid } },
     });
 
@@ -55,7 +55,7 @@ export class AppointmentsService {
     }
 
     // 해당 약속이 존재하는지 확인
-    const appointment = await this.prisma.appointments.findUnique({
+    const appointment = await this.prisma.appointment.findUnique({
       where: { id: aid, is_deleted: false },
     });
 
@@ -69,7 +69,7 @@ export class AppointmentsService {
     );
 
     // 체크인 정보 저장
-    const checkin = await this.prisma.checkins.create({
+    const checkin = await this.prisma.checkin.create({
       data: {
         aid,
         uid,
@@ -86,17 +86,17 @@ export class AppointmentsService {
     const { gid } = appointment;
     const year = new Date(appointment.meet_at).getFullYear();
     const month = new Date(appointment.meet_at).getMonth() + 1;
-    await this.prisma.rankings.upsert({
+    await this.prisma.ranking.upsert({
       where: {
-        gid_uid_year_month: { gid, uid, year, month }
+        gid_uid_year_month: { gid, uid, year, month },
       },
       create: { gid, uid, year, month },
       update: {
         accumulated_time: {
-          increment: timeDifference
-        }
+          increment: timeDifference,
+        },
       },
-    })
+    });
 
     return {
       time_difference: timeDifference,
@@ -104,7 +104,7 @@ export class AppointmentsService {
   }
 
   async getMyAppointments(userId: number) {
-    const appointments = await this.prisma.appointments.findMany({
+    const appointments = await this.prisma.appointment.findMany({
       where: {
         is_deleted: false,
         users: {
@@ -153,77 +153,91 @@ export class AppointmentsService {
     }));
   }
 
-  async findDetail(aid: number):Promise<GetAppointmentDetailDto>{
+  async findDetail(aid: number): Promise<GetAppointmentDetailDto> {
     //todo: get arival of time
-    try
-    {const appointment= await this.prisma.appointments.findUnique({
-      where:{
-        is_deleted: false,
-        id: aid,
-      },
-      select:{
-        title: true,
-        meet_at: true,
-        penalty: true,
-        users: { //Participants[]
-          select:{
-            uid: true,
-            is_deleted: true,//확인하기
-            user:{
-              select:{
-                nickname: true,
-              }
-            }
-          }
+    try {
+      const appointment = await this.prisma.appointment.findUnique({
+        where: {
+          is_deleted: false,
+          id: aid,
         },
-        checkins:{
-          select:{
-            created_at: true,
-            is_deleted: true,
-            aid: true,
-            uid: true,
+        select: {
+          title: true,
+          meet_at: true,
+          penalty: true,
+          users: {
+            //Participants[]
+            select: {
+              uid: true,
+              is_deleted: true, //확인하기
+              user: {
+                select: {
+                  nickname: true,
+                },
+              },
+            },
+          },
+          checkins: {
+            select: {
+              created_at: true,
+              is_deleted: true,
+              aid: true,
+              uid: true,
+            },
+          },
+        },
+      });
+      const {
+        title,
+        meet_at,
+        penalty,
+        users: participants,
+        checkins,
+      } = appointment;
+      const earlycheckins: { name: string; latency: number }[] = [];
+      const latecheckins: { name: string; latency: number }[] = [];
+      const incompletecheckins: { name: string }[] = [];
+      const validPart = participants.filter((p) => !p.is_deleted);
+
+      for (let i = 0; i < validPart.length; i++) {
+        const participant = validPart[i];
+        const thecheckin = checkins.find((c) => c.uid == participant.uid);
+        if (!thecheckin || thecheckin.is_deleted) {
+          incompletecheckins.push({ name: participant.user.nickname });
+        } else {
+          const latency =
+            (new Date(thecheckin.created_at).getTime() -
+              new Date(appointment.meet_at).getTime()) /
+            1000;
+          if (latency > 0) {
+            latecheckins.push({
+              name: participant.user.nickname,
+              latency: latency,
+            });
+          } else {
+            earlycheckins.push({
+              name: participant.user.nickname,
+              latency: latency,
+            });
           }
         }
       }
-    });
-    const {title, meet_at, penalty, users: participants, checkins}=appointment;
-    const earlycheckins:{name:string, latency: number}[]=[];
-    const latecheckins: {name:string, latency:number}[]=[];
-    const incompletecheckins: {name:string}[]=[];
-    const validPart= participants.filter(p=> !p.is_deleted);
 
-    for(let i=0; i<validPart.length; i++){
-      const participant=validPart[i];
-      const thecheckin= checkins.find(c=> c.uid== participant.uid);
-      if(!thecheckin || thecheckin.is_deleted){
-        incompletecheckins.push({name: participant.user.nickname});
-      }
-      else{
-        const latency= (new Date(thecheckin.created_at).getTime() - new Date(appointment.meet_at).getTime()) / 1000;
-        if(latency>0){
-          latecheckins.push({name: participant.user.nickname, latency: latency});
-        }
-        else{
-          earlycheckins.push({name: participant.user.nickname, latency: latency});
-        }
-      }
+      earlycheckins.sort((a, b) => a.latency - b.latency);
+      latecheckins.sort((a, b) => b.latency - a.latency);
+      incompletecheckins.sort((a, b) => a.name.localeCompare(b.name));
+
+      return {
+        title: title,
+        penalty: penalty,
+        latecheckins: latecheckins,
+        earlycheckins: earlycheckins,
+        incompletecheckins: incompletecheckins,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to fetch appointment details');
     }
-
-    earlycheckins.sort((a,b)=> a.latency-b.latency);
-    latecheckins.sort((a,b)=> b.latency-a.latency);
-    incompletecheckins.sort((a,b)=> a.name.localeCompare(b.name));
-
-    return{
-      title: title,
-      penalty: penalty,
-      latecheckins: latecheckins,
-      earlycheckins: earlycheckins,
-      incompletecheckins: incompletecheckins
-    };
-  } catch(error){
-    console.error(error);
-    throw new Error('Failed to fetch appointment details');
-  }
   }
 
   findOne(id: number) {
@@ -240,7 +254,7 @@ export class AppointmentsService {
     isParticipating: boolean,
   ): Promise<Participant> {
     console.log('hi');
-    let participant = await this.prisma.participants.findUnique({
+    let participant = await this.prisma.participant.findUnique({
       where: {
         aid_uid: {
           aid: aid,
@@ -250,7 +264,7 @@ export class AppointmentsService {
     });
 
     if (participant) {
-      participant = await this.prisma.participants.update({
+      participant = await this.prisma.participant.update({
         where: {
           aid_uid: {
             aid: aid,
@@ -263,7 +277,7 @@ export class AppointmentsService {
         },
       });
     } else {
-      participant = await this.prisma.participants.create({
+      participant = await this.prisma.participant.create({
         data: {
           aid: aid,
           uid: userId,
@@ -277,9 +291,11 @@ export class AppointmentsService {
     return participant as Participant;
   }
 
-  async findAllAppByGroup(gid: number,uid: number): Promise<GetGroupAppointmentDto[]> {
-
-    const appointments = await this.prisma.appointments.findMany({
+  async findAllAppByGroup(
+    gid: number,
+    uid: number,
+  ): Promise<GetGroupAppointmentDto[]> {
+    const appointments = await this.prisma.appointment.findMany({
       where: { gid, is_deleted: false },
       include: {
         users: {
@@ -291,15 +307,21 @@ export class AppointmentsService {
       },
     });
 
-    return appointments.map(appointment => {
+    return appointments.map((appointment) => {
       // Filter participants who are not deleted
-      const activeParticipants = appointment.users.filter(participant => !participant.is_deleted);
+      const activeParticipants = appointment.users.filter(
+        (participant) => !participant.is_deleted,
+      );
 
       // Get profile URLs of active participants
-      const profileUrls = activeParticipants.map(participant => participant.user.profile_url);
+      const profileUrls = activeParticipants.map(
+        (participant) => participant.user.profile_url,
+      );
 
       // Check if the user has participated
-      const participated = activeParticipants.some(participant => participant.uid === uid);
+      const participated = activeParticipants.some(
+        (participant) => participant.uid === uid,
+      );
 
       return {
         id: appointment.id,
@@ -312,3 +334,4 @@ export class AppointmentsService {
     });
   }
 }
+
