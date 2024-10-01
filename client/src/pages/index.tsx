@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import Image from 'next/image';
 
+const kakaoRedirectUrl= process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URL || 'default';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -61,8 +62,7 @@ const LoginPage = () => {
   }
 
   const handleKakaoLogin = () => {
-    //router.push('https://kauth.kakao.com/oauth/authorize?client_id=1d8f95e817e0e004196570d7e3538048&redirect_uri=https://dontbelate.paulupa.com/kakao-redirected&response_type=code&scope=openid,profile_image,account_email,profile_nickname');
-    router.push('https://kauth.kakao.com/oauth/authorize?client_id=1d8f95e817e0e004196570d7e3538048&redirect_uri=https://localhost:3000npm /kakao-redirected&response_type=code&scope=openid,profile_image,account_email,profile_nickname');
+    router.push(kakaoRedirectUrl);
   };
 
   return (

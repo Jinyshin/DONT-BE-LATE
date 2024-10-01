@@ -3,24 +3,31 @@ import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken } from 'firebase/messaging';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyC2dEgo0Jap-6EB1XGIInisylJzXcWx8-A",
-    authDomain: "dontbelate-ys.firebaseapp.com",
-    projectId: "dontbelate-ys",
-    storageBucket: "dontbelate-ys.appspot.com",
-    messagingSenderId: "829654009199",
-    appId: "1:829654009199:web:e0abf7e4a5f0aa4ad9d49a"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Firebase 초기화
 const app = initializeApp(firebaseConfig);
+
 let messaging;
-if (typeof windwo !== 'undefined' && 'serviceWorker' in navigator) {
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   messaging = getMessaging(app);
 }
 
 
 export const requestForToken = () => {
-  return getToken(messaging,  { vapidKey: '1:829654009199:web:e0abf7e4a5f0aa4ad9d49a' })
+
+  if (!messaging) {
+    console.error('Firebase messaging is not initialized.');
+    return;
+  }
+
+  return getToken(messaging,  { vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY })
     .then((currentToken) => {
       if (currentToken) {
         console.log('FCM 토큰:', currentToken);
