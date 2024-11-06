@@ -77,14 +77,25 @@ export class AccountsService {
 
   async authorizeByKakaoOAuth(code: string) {
     const url = 'https://kauth.kakao.com/oauth/token';
-    const res = await this.httpService.axiosRef.get(url, {
-      params: {
-        code,
-        client_id: process.env.KAKAOAPIS_CLIENT_ID,
-        grant_type: 'authorization_code',
-        redirect_uri: process.env.KAKAOAPIS_OAUTH_REDIRECT_URI,
-      },
-    });
+    // const res = await this.httpService.axiosRef.get(url, {
+    //   params: {
+    //     code,
+    //     client_id: process.env.KAKAOAPIS_CLIENT_ID,
+    //     grant_type: 'authorization_code',
+    //     redirect_uri: process.env.KAKAOAPIS_OAUTH_REDIRECT_URI,
+    //   },
+    // });
+    let res;
+    try {
+      res = await this.httpService.axiosRef.get(url, {
+        params: {
+          code,
+          client_id: process.env.KAKAOAPIS_CLIENT_ID,
+          grant_type: 'authorization_code',
+          redirect_uri: process.env.KAKAOAPIS_OAUTH_REDIRECT_URI,
+        },
+      });
+    } catch(e) {console.error(e);}
     const {
       payload: { email, nickname, picture: profile_url },
     } = this.parseJWT<any, KakaoIdToken>(res.data['id_token']);

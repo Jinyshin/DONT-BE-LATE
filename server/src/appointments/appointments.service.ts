@@ -333,5 +333,29 @@ export class AppointmentsService {
       };
     });
   }
+
+  async listUpcomings() {
+    const now = new Date(Date.now());
+    const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+
+    return await this.prisma.appointment.findMany({
+      select: {
+        title: true,
+        meet_at: true,
+        users: {
+          select: {
+            user: true
+          }
+        }
+      },
+      where: {
+        AND: [
+          { meet_at: { gt: now } },
+          { meet_at: { lte: oneHourLater } }
+        ],
+        is_deleted: false
+      }
+    });
+  }
 }
 
