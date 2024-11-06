@@ -3,8 +3,35 @@ import Head from 'next/head';
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../styles/globalStyles';
 import theme from '../styles/theme';
+import { useEffect } from 'react';
+import { requestForToken} from '../firebase.js';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    if (typeof window !== 'undefined' &&  'serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then((registration) => {
+          console.log('Service Worker registered:', registration);
+
+          // 환경 변수를 서비스 워커로 전달
+          registration.active?.postMessage({
+            type: 'SET_ENV',
+            apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+            authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+            projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+            storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+            appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+          });
+
+          // Firebase 알림 토큰 요청
+          requestForToken();
+        })
+        .catch((error) => {
+          console.error('Service Worker registration failed:', error);
+        });
+    }
+  }, []);  
   return (
     <>
       <Head>
