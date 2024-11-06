@@ -24,7 +24,7 @@ model User {
   is_deleted    Boolean   @default(false)
 
   created_at    DateTime  @default(now())
-  updated_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
 }
 
 model Group {
@@ -41,7 +41,7 @@ model Group {
   is_deleted          Boolean   @default(false)
 
   created_at          DateTime  @default(now())
-  updated_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
 }
 
 model Appointment {
@@ -61,7 +61,7 @@ model Appointment {
   is_deleted  Boolean   @default(false)
 
   created_at  DateTime  @default(now())
-  updated_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 }
 
 model GroupMember {
@@ -74,7 +74,7 @@ model GroupMember {
   is_deleted  Boolean   @default(false)
 
   created_at  DateTime  @default(now())
-  updated_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 
   @@id([gid, uid])
 }
@@ -89,7 +89,7 @@ model Participant {
   is_deleted  Boolean       @default(false)
 
   created_at  DateTime      @default(now())
-  updated_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
 
   @@id([aid, uid])
 }
@@ -104,7 +104,7 @@ model Checkin {
   is_deleted  Boolean       @default(false)
 
   created_at  DateTime      @default(now())
-  updated_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
 
   @@id([aid, uid])
 }
@@ -123,7 +123,7 @@ model Ranking {
   is_deleted        Boolean   @default(false)
 
   created_at        DateTime  @default(now())
-  updated_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
 
   @@id([gid, uid, year, month])
 }
