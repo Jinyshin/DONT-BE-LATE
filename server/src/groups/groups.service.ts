@@ -9,7 +9,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { generateRandomCode } from 'src/utils/generate-groupcode';
 import { Group } from './entities/group.entity';
 import { JwtService } from '@nestjs/jwt';
-import { GroupMember } from './entities/groupmember.entity';
 import { GroupMemberResponseDto } from './dto/group-member-response.dto';
 
 @Injectable()
@@ -171,4 +170,3 @@ export class GroupsService {
     return { rankings };
   }
 }
-
