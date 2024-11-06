@@ -19,6 +19,7 @@ model User {
   checkins      Checkin[]
   appointments  Participant[]
   rankigs       Ranking[]
+  fcmTokens     FcmToken[]
 
   is_deleted    Boolean   @default(false)
 
@@ -127,3 +128,11 @@ model Ranking {
   @@id([gid, uid, year, month])
 }
 
+model FcmToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  uid    Int
+  user      User     @relation(fields: [uid], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
