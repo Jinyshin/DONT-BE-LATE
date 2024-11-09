@@ -26,8 +26,15 @@ export const requestForToken = () => {
     console.error('Firebase messaging is not initialized.');
     return;
   }
-
-  return getToken(messaging,  { vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY })
+  navigator.serviceWorker.ready
+    .then((registration)=>{
+      console.log('Service Worker is ready: ', registration);
+      return getToken(
+        messaging,  {
+          vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+          serviceWorkerRegistration: registration,
+        });
+    })
     .then((currentToken) => {
       if (currentToken) {
         console.log('FCM 토큰:', currentToken);

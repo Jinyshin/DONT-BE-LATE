@@ -56,7 +56,7 @@ self.addEventListener('notificationclick',function(event){
           type: 'OPEN_MODAL',
           data: event.notification.data
         });
-        return client.navigate(targetUrl).then(()=> client.focus));
+        return client.navigate(targetUrl).then(()=> client.focus);
       }
       else{
         //새 창이 필요한 경우
