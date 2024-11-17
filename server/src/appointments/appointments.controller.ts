@@ -12,12 +12,13 @@ import {
 } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { ApiTags,ApiOperation } from '@nestjs/swagger';
-import {PatchAppointmentDto} from './dto/patch-appointment.dto';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { PatchAppointmentDto } from './dto/patch-appointment.dto';
 import { authorize } from 'src/utils/jwt-auth';
 import { JwtService } from '@nestjs/jwt';
 import { CheckinResponseDto } from './dto/checkin-response.dto';
 import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
+
 @Controller('api/v1/appointments')
 @ApiTags('Appointments')
 export class AppointmentsController {
@@ -62,9 +63,7 @@ export class AppointmentsController {
 
   @Get()
   @ApiOperation({ summary: 'userId를 통해 메인에 띄울 약속 받아오기' })
-  async getMyAppointments(
-    @Headers('Authorization') authorization?: string,
-  ) {
+  async getMyAppointments(@Headers('Authorization') authorization?: string) {
     const { id: uid } = await authorize(this.jwtService, authorization);
     return this.appointmentsService.getMyAppointments(uid);
   }
@@ -86,7 +85,7 @@ export class AppointmentsController {
 
   @Get(':aid')
   @ApiOperation({ summary: '약속 상세 조회' })
-  findOne(@Param('aid') id: string): Promise<GetAppointmentDetailDto>{
+  findOne(@Param('aid') id: string): Promise<GetAppointmentDetailDto> {
     return this.appointmentsService.findDetail(+id);
   }
 
@@ -101,9 +100,13 @@ export class AppointmentsController {
     @Param('aid') aid: string,
     @Body() patchAppointmentDto: PatchAppointmentDto,
     @Headers('Authorization') authorization?: string,
-  ){
+  ) {
     const { id: uid } = await authorize(this.jwtService, authorization);
 
-    return this.appointmentsService.updateParticipants(uid, parseInt(aid), patchAppointmentDto.isParticipating);
+    return this.appointmentsService.updateParticipants(
+      uid,
+      parseInt(aid),
+      patchAppointmentDto.isParticipating,
+    );
   }
 }
