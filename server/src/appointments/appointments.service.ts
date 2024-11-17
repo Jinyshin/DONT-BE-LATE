@@ -6,7 +6,6 @@ import {
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { GetGroupAppointmentDto } from './dto/get-group-appointments.dto';
 import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
-import { Appointment } from './entities/appointment.entity';
 import { Participant } from 'src/users/entities/participant.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CheckinResponseDto } from './dto/checkin-response.dto';
@@ -23,7 +22,6 @@ export class AppointmentsService {
           meet_at: new Date(createAppointmentDto.meet_at),
           is_deleted: false,
           created_at: new Date(),
-          updated_at: new Date(),
         },
       });
 
@@ -33,7 +31,6 @@ export class AppointmentsService {
           uid: userId,
           is_deleted: false,
           created_at: new Date(),
-          updated_at: new Date(),
         },
       });
 
@@ -75,7 +72,6 @@ export class AppointmentsService {
         uid,
         is_deleted: false,
         created_at: seoulTime,
-        updated_at: seoulTime,
       },
     });
 
@@ -273,7 +269,6 @@ export class AppointmentsService {
         },
         data: {
           is_deleted: !isParticipating,
-          updated_at: new Date(),
         },
       });
     } else {
@@ -283,7 +278,6 @@ export class AppointmentsService {
           uid: userId,
           is_deleted: !isParticipating,
           created_at: new Date(),
-          updated_at: new Date(),
         },
       });
     }
@@ -334,4 +328,3 @@ export class AppointmentsService {
     });
   }
 }
-
