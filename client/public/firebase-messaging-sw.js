@@ -26,7 +26,7 @@ self.addEventListener('message', (event) => {
     }
 
     // 백그라운드 메시지 처리
-    messaging.onBackgroundMessage(function (payload) {
+    messaging.onBackgroundMessage((payload)=>{
       console.log('[firebase-messaging-sw.js] 백그라운드 메시지 수신', payload);
 
       const notificationTitle = payload.notification.title;
@@ -35,6 +35,8 @@ self.addEventListener('message', (event) => {
         icon: '/icon-16x16.png',  // 푸시 알림 아이콘 설정
         data: payload.data,
       };
+
+      console.log('알림표시 전: ', notificationTitle, notificationOptions);
 
       self.registration.showNotification(notificationTitle, notificationOptions);
     });

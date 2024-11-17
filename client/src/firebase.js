@@ -26,8 +26,9 @@ export const requestForToken = () => {
     console.error('Firebase messaging is not initialized.');
     return;
   }
-  navigator.serviceWorker.ready
-    .then((registration)=>{
+  //navigator.serviceWorker.ready
+  navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/firebase/' })
+  .then((registration)=>{
       console.log('Service Worker is ready: ', registration);
       return getToken(
         messaging,  {
