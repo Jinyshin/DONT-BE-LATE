@@ -13,6 +13,7 @@ async function bootstrap() {
     .setTitle('그만좀늦자')
     .setDescription('The 그만좀늦자 API description')
     .setVersion('0.1')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
