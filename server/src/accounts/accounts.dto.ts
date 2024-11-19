@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsString,
   IsNotEmpty,
@@ -51,7 +51,7 @@ export class SignupDto {
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '프로필 URL (선택 사항)',
     example: 'https://example.com/profile.jpg',
     required: false,
@@ -59,7 +59,7 @@ export class SignupDto {
   @IsString()
   @IsOptional()
   @IsUrl({}, { message: '올바른 URL 형식이 아닙니다' })
-  profileUrl?: string;
+  profileUrl: string = '';
 }
 
 export class KakaoSigninDto {
