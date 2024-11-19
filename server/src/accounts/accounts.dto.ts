@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsEmail } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsEmail,
+  maxLength,
+  MaxLength,
+  isURL,
+  IsUrl,
+} from 'class-validator';
 
 export class SigninDto {
   @ApiProperty({
@@ -31,6 +40,7 @@ export class SignupDto {
   @ApiProperty({ description: '사용자의 닉네임', example: 'JohnDoe' })
   @IsString()
   @IsNotEmpty()
+  @MaxLength(10)
   nickname: string;
 
   @ApiProperty({
@@ -48,6 +58,7 @@ export class SignupDto {
   })
   @IsString()
   @IsOptional()
+  @IsUrl({}, { message: '올바른 URL 형식이 아닙니다' })
   profileUrl?: string;
 }
 
