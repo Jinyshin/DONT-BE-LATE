@@ -49,6 +49,8 @@ export class AccountsController {
   @ApiOperation({ summary: '카카오 OAuth로 로그인' })
   @ApiResponse({ status: 200, description: '카카오 로그인 성공' })
   @ApiResponse({ status: 400, description: '잘못된 입력 데이터' })
+  @ApiResponse({ status: 401, description: '유효하지 않은 카카오 인증 코드' })
+  @ApiResponse({ status: 500, description: '카카오 인증 서버 연동 오류' })
   async kakaoSignin(@Body() kakaoSigninDto: KakaoSigninDto) {
     try {
       return await this.accountService.authorizeByKakaoOAuth(
@@ -59,7 +61,9 @@ export class AccountsController {
         throw e;
       } else {
         console.error(e);
-        throw new BadRequestException();
+        throw new InternalServerErrorException(
+          '카카오 로그인 중 오류가 발생했습니다',
+        );
       }
     }
   }
