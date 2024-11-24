@@ -45,6 +45,7 @@ export const requestForToken = () => {
         console.log('JWT 토큰:', token);
         if (!token) {
           //router.push(`/`);
+          console.log('FCM 토큰 저장 대기: 로그인하지 않음');
           return;
         }
         await axios.post(
@@ -55,6 +56,10 @@ export const requestForToken = () => {
               Authorization: `Bearer ${token}`,
             },
           }
+        )
+        .then(()=>{
+          console.log('서버에 FCM 토큰 저장 요청 성공');
+        }
         );
       } else {
         console.log('토큰을 가져올 수 없습니다.');
