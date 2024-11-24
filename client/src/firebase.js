@@ -1,6 +1,7 @@
 // firebase.js
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken } from 'firebase/messaging';
+import axios from 'axios';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -36,10 +37,25 @@ export const requestForToken = () => {
           serviceWorkerRegistration: registration,
         });
     })
-    .then((currentToken) => {
+    .then(async (currentToken) => {
       if (currentToken) {
         console.log('FCM 토큰:', currentToken);
         // 서버에 토큰을 저장하는 로직 추가
+        const token = localStorage.getItem('accessToken'); //jwt token
+        console.log('JWT 토큰:', token);
+        if (!token) {
+          //router.push(`/`);
+          return;
+        }
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/notifications/save-token`,
+          { token: currentToken },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       } else {
         console.log('토큰을 가져올 수 없습니다.');
       }
