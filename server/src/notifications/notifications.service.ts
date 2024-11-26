@@ -38,6 +38,7 @@ export class NotificationsService {
 
       const upcomings = await this.prisma.appointment.findMany({
         select: {
+          id: true,
           title: true,
           meet_at: true,
           users: {
@@ -59,31 +60,37 @@ export class NotificationsService {
         }
       });
 
-      for (const { title, meet_at, users } of upcomings) {
+      for (const { id, title, meet_at, users } of upcomings) {
         for (const { user: { fcmTokens } } of users) {
           for (const { token } of fcmTokens) {
             // just-before alert
             setTimeout(async () => {
-              await this.sendNotification(token, {
+              const noti = {
                 title: `약속 시간 알림!`,
                 body: `${title} 약속 시간이 다 되었어요!`
-              });
+              };
+              const data = { aid: id.toString() };
+              await this.sendNotification(token, noti, data);
             }, meet_at.getTime() - now);
 
             // 30m-before alert
             setTimeout(async () => {
-              await this.sendNotification(token, {
+              const noti = {
                 title: `30분 전 알림`,
                 body: `${title} 약속 30분 전입니다.`
-              });
+              };
+              const data = { aid: id.toString() };
+              await this.sendNotification(token, noti, data);
             }, meet_at.getTime() - THIRTY_MINUTE - now);
 
             // 1h-before alert
             setTimeout(async () => {
-              await this.sendNotification(token, {
+              const noti = {
                 title: `1시간 전 알림`,
                 body: `${title} 약속 1시간 전입니다.`
-              });
+              };
+              const data = { aid: id.toString() };
+              await this.sendNotification(token, noti, data);
             }, meet_at.getTime() - ONE_HOUR - now);
           }
         }
@@ -98,12 +105,12 @@ export class NotificationsService {
     }
   }
 
-  private async sendNotification(token: string, notification: Notification) {
+  private async sendNotification(token: string, notification: Notification, data: Record<string, string>) {
     try {
       await this.firebase
         .firebaseRef
         .messaging()
-        .send({ token, notification });
+        .send({ token, notification, data });
     } catch (e) {
       console.error(`firebase push 전송 실패: ${e}`)
     }
