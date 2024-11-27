@@ -99,7 +99,7 @@ export class NotificationsService {
   }
 
   disableAlarm() {
-    if (this.alarm === null) {
+    if (this.alarm !== null) {
       clearInterval(this.alarm);
       this.alarm = null;
     }
@@ -112,7 +112,14 @@ export class NotificationsService {
         .messaging()
         .send({ token, notification, data });
     } catch (e) {
-      console.error(`firebase push 전송 실패: ${e}`)
+      console.error(`firebase push 전송 실패: ${e}`);
+
+      switch (e.code) {
+        case 'messaging/invalid-registration-token':
+        case 'messaging/registration-token-not-registered':
+          await this.prisma.fcmToken.delete({ where: { token } });
+          break;
+      }
     }
   }
 }

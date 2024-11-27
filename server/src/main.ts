@@ -20,14 +20,18 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+  try {
+    app.select(NotificationsModule)
+      .get(NotificationsService, { strict: true })
+      .enableAlarm();
+  } catch (e) {
+    throw Error(`알람 활성화 실패: ${e}`);
+  }
+
   await app.listen(8080);
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
-
-  app.select(NotificationsModule)
-    .get(NotificationsService, { strict: true })
-    .enableAlarm();
 }
 bootstrap();

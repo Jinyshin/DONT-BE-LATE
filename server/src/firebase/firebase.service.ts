@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class FirebaseService {
-    firebaseRef: admin.app.App;
+    readonly firebaseRef: admin.app.App;
 
     constructor() {
         try {
@@ -11,8 +11,7 @@ export class FirebaseService {
                 credential: admin.credential.applicationDefault()
             });
         } catch (e) {
-            console.error(`firebase 초기화 실패: ${e}`);
-            process.exit(-1);
+            throw new Error(`firebase 초기화 실패: ${e}`);
         }
     }
 }
