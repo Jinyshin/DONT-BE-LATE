@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
+import { NotificationsModule } from './notifications/notifications.module';
+import { NotificationsService } from './notifications/notifications.service';
 
 declare const module: any;
 dotenv.config();
@@ -17,6 +19,14 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
+  try {
+    app.select(NotificationsModule)
+      .get(NotificationsService, { strict: true })
+      .enableAlarm();
+  } catch (e) {
+    throw Error(`알람 활성화 실패: ${e}`);
+  }
 
   await app.listen(8080);
   if (module.hot) {
