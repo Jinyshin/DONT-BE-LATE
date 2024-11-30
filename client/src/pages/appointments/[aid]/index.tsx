@@ -1,7 +1,7 @@
 // src/pages/appointments/{aid}.tsx
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { EarlyArrivalList, LateArrivalList,NotArrivalList } from '../../../components/ArrivalList';
 import axios from 'axios';
 import AppointmentDetailHeader from '../../../components/AppointmentDetailHeader';
@@ -9,6 +9,7 @@ import AppointmentDetailHeader from '../../../components/AppointmentDetailHeader
 
 const AppointmentDetail: React.FC = () => {
   const params = useParams<{ aid: string }>();
+  const searchParams = useSearchParams();
   const [aid, setAid] = useState<number | null>(null);
 
   const [latecheckins, setLatecheckins]= useState<{name: string, latency: number}[]>([]);

@@ -45,28 +45,21 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('notificationclick',function(event){
   event.notification.close();
+  const targetUrl = `/notifications?aid=${event.notification.data.aid}`;
+
   event.waitUntil(
     clients.matchAll({
       type: 'window',
       includeUncontrolled: true
     }).then((clientList)=>{
       const client =clientList.find((c)=> c.visibilityState === 'visible');
-      const targetUrl = '/notifications';
       if (client){
         //창이 열려있는 경우
-        client.postMessage({
-          type: 'OPEN_MODAL',
-          data: event.notification.data
-        });
         return client.navigate(targetUrl).then(()=> client.focus);
       }
       else{
         //새 창이 필요한 경우
-        return clients.openWindow(targetUrl).then((newClient)=>{
-          newClient.postMessage({
-            type: 'OPEN_MODAL',
-            data: event.notification.data});
-        });
+        return clients.openWindow(targetUrl);
       }
     })
   );

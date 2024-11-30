@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
 import Image from 'next/image';
-import { requestForToken} from '../firebase.js';
+import { storeTokenInDatabase } from '../firebase.js';
 
 const kakaoRedirectUrl= process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URL || 'default';
 
@@ -55,7 +55,7 @@ const LoginPage = () => {
       );
 
       localStorage.setItem("accessToken", accessToken);
-      requestForToken();
+      storeTokenInDatabase();
       router.push('/home');
     } catch(e) {
       if (axios.isAxiosError(e)) {
