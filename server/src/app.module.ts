@@ -7,9 +7,10 @@ import { UsersModule } from './users/users.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { FirebaseModule } from './firebase/firebase.module';
 
 @Module({
-  imports: [GroupsModule, AppointmentsModule, UsersModule, AccountsModule, PrismaModule, NotificationsModule],
+  imports: [GroupsModule, AppointmentsModule, UsersModule, AccountsModule, PrismaModule, NotificationsModule, FirebaseModule],
   controllers: [AppController],
   providers: [AppService],
 })
