@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { SaveTokenDto } from './dto/save-token.dto';
+import { TestNotificationsDto } from './dto/test-notificatioins.dto';
 import { JwtService } from '@nestjs/jwt';
 import { authorize } from 'src/utils/jwt-auth';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -48,4 +49,28 @@ export class NotificationsController {
       );
     }
   }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '테스트용 firebase push 전송' })
+  @ApiResponse({ status: 201, description: 'firebase push 전송 성공' })
+  @ApiResponse({ status: 400, description: '잘못된 요청 데이터입니다.' })
+  @ApiResponse({ status: 401, description: '인증 실패' })
+  @ApiResponse({ status: 500, description: '서버 오류' })
+  @Post('test-notifications')
+  async testNotifications(
+    @Body() testNotificatioinsDto: TestNotificationsDto,
+  ): Promise<void> {
+    // 추출한 userId를 통해 토큰 저장
+    try {
+      await this.notificationsService.testNotifications(testNotificatioinsDto);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException('유효하지 않은 데이터 형식입니다.');
+      }
+      throw new InternalServerErrorException(
+        '테스트 알림 전송 중 오류가 발생했습니다.',
+      );
+    }
+  }
+
 }

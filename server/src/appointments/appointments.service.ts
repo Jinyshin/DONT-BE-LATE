@@ -229,6 +229,7 @@ export class AppointmentsService {
         latecheckins: latecheckins,
         earlycheckins: earlycheckins,
         incompletecheckins: incompletecheckins,
+        meet_at: meet_at,
       };
     } catch (error) {
       console.error(error);
