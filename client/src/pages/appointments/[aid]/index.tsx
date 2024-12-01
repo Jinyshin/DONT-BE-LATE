@@ -5,9 +5,11 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { EarlyArrivalList, LateArrivalList,NotArrivalList } from '../../../components/ArrivalList';
 import axios from 'axios';
 import AppointmentDetailHeader from '../../../components/AppointmentDetailHeader';
-
+import PushModalExample from '../../../components/Modal/PushModalExample';
 
 const AppointmentDetail: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] =  useState<boolean>(false);
+
   const params = useParams<{ aid: string }>();
   const searchParams = useSearchParams();
   const [aid, setAid] = useState<number | null>(null);
@@ -18,6 +20,16 @@ const AppointmentDetail: React.FC = () => {
 
   const [title, setTitle]= useState<string>("...");
   const [penalty, setPenalty]= useState<string>("...");
+  const [meetAt, setMeetAt] = useState<Date>(new Date());
+
+  const appointmentdata={
+    title: title,
+    penalty: penalty,
+    latecheckins: latecheckins,
+    earlycheckins: earlycheckins,
+    incompletecheckins: incompletecheckins,
+    meet_at: meetAt
+  };
 
   useEffect(() => {
     if (params) {
@@ -33,13 +45,25 @@ const AppointmentDetail: React.FC = () => {
           setLatecheckins(data.latecheckins);
           setEarlycheckins(data.earlycheckins);
           setIncompletecheckins(data.incompletecheckins);
+          setMeetAt(data.meet_at);
         } catch (error) {
           console.error('Failed to fetch appointment details:', error);
         }
       };
       fetchedAppDetail(aidNumber);
+
+      const modalParam = searchParams.get('modal');
+        setIsModalOpen(modalParam === 'true');
+      
     }
-  }, [params]);
+  }, [params, searchParams]);
+
+  const closeModal = () =>{
+    setIsModalOpen(false);
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.delete('modal');
+    window.history.replaceState({},'',currentUrl.toString());
+  }
 
   return (
     <Container>
@@ -64,6 +88,7 @@ const AppointmentDetail: React.FC = () => {
         <NotArrivalList checkins={incompletecheckins}/>
       </Card>
 
+      {isModalOpen && <PushModalExample appointmentdata={appointmentdata} onClose = {closeModal} />}
     </Container>
   );
 };

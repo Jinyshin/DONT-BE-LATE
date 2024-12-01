@@ -24,7 +24,7 @@ export default function NotificationsPage() {
 
   return (
     <div>
-      <h1>Notifications Page</h1>
+      <h1>Loding... Notifications Page</h1>
     </div>
   );
 }
