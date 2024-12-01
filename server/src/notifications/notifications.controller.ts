@@ -11,9 +11,15 @@ import { NotificationsService } from './notifications.service';
 import { SaveTokenDto } from './dto/save-token.dto';
 import { JwtService } from '@nestjs/jwt';
 import { authorize } from 'src/utils/jwt-auth';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('api/v1/notifications')
+@ApiTags('Notifications')
 export class NotificationsController {
   constructor(
     private readonly notificationsService: NotificationsService,
