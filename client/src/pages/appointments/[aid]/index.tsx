@@ -21,6 +21,7 @@ const AppointmentDetail: React.FC = () => {
   const [title, setTitle]= useState<string>("...");
   const [penalty, setPenalty]= useState<string>("...");
   const [meetAt, setMeetAt] = useState<Date>(new Date());
+  const [timeLeft, setTimeLeft] = useState<number>(0);
 
   const appointmentdata={
     title: title,
@@ -28,7 +29,8 @@ const AppointmentDetail: React.FC = () => {
     latecheckins: latecheckins,
     earlycheckins: earlycheckins,
     incompletecheckins: incompletecheckins,
-    meet_at: meetAt
+    meet_at: meetAt,
+    time_left: timeLeft
   };
 
   useEffect(() => {
@@ -46,6 +48,7 @@ const AppointmentDetail: React.FC = () => {
           setEarlycheckins(data.earlycheckins);
           setIncompletecheckins(data.incompletecheckins);
           setMeetAt(data.meet_at);
+          setTimeLeft(data.time_left);
         } catch (error) {
           console.error('Failed to fetch appointment details:', error);
         }
@@ -88,7 +91,7 @@ const AppointmentDetail: React.FC = () => {
         <NotArrivalList checkins={incompletecheckins}/>
       </Card>
 
-      {isModalOpen && <PushModalExample appointmentdata={appointmentdata} onClose = {closeModal} />}
+      {isModalOpen && <PushModalExample isOpen={isModalOpen} appointmentdata={appointmentdata} onClose = {closeModal} />}
     </Container>
   );
 };

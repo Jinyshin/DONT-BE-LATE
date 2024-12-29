@@ -21,4 +21,6 @@ export class GetAppointmentDetailDto {
   @ApiProperty()
   meet_at: Date;
 
+  @ApiProperty()
+  time_left: number;
 }

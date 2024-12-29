@@ -45,7 +45,7 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('notificationclick',function(event){
   event.notification.close();
-  const targetUrl = `/notifications?aid=${event.notification.data.aid}`;
+  const targetUrl = `/notifications/${event.notification.data.aid}`;
 
   event.waitUntil(
     clients.matchAll({

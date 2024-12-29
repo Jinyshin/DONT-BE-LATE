@@ -222,6 +222,16 @@ export class AppointmentsService {
       earlycheckins.sort((a, b) => a.latency - b.latency);
       latecheckins.sort((a, b) => b.latency - a.latency);
       incompletecheckins.sort((a, b) => a.name.localeCompare(b.name));
+      
+      const now = new Date();
+      const seoulTime = new Date(
+        now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+      );
+
+      const time_left =
+      (new Date(seoulTime).getTime() -
+        new Date(appointment.meet_at).getTime()) /
+      1000;
 
       return {
         title: title,
@@ -230,6 +240,7 @@ export class AppointmentsService {
         earlycheckins: earlycheckins,
         incompletecheckins: incompletecheckins,
         meet_at: meet_at,
+        time_left: time_left,
       };
     } catch (error) {
       console.error(error);
