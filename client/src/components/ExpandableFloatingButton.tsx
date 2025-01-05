@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import styled, { keyframes, css } from 'styled-components';
 import { MdAdd, MdClose } from 'react-icons/md';
+import styled, { css, keyframes } from 'styled-components';
 
 interface ExpandableFloatingButtonProps {
   onJoinGroupClick: () => void;

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
-import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 
 const SignupPage = () => {

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from './user.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { User } from './user.entity';
 
 export class Participant {
   @ApiProperty()

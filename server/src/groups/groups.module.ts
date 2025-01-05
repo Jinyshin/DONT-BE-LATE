@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { GroupsService } from './groups.service';
-import {AppointmentsService} from '../appointments/appointments.service'
-import { GroupsController } from './groups.controller';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
+import { PrismaModule } from 'src/prisma/prisma.module';
+import { AppointmentsService } from '../appointments/appointments.service';
+import { GroupsController } from './groups.controller';
+import { GroupsService } from './groups.service';
 
 @Module({
   controllers: [GroupsController],
