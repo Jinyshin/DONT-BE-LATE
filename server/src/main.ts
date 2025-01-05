@@ -1,12 +1,14 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
+import { AppModule } from './app.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { NotificationsService } from './notifications/notifications.service';
 
 declare const module: any;
 dotenv.config();
+
+console.log("env", process.env.NODE_ENV);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
