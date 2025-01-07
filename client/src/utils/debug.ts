@@ -1,11 +1,11 @@
 import process from "node:process";
 
 export function isDev(): boolean {
-    return process.env.NODE_ENV == "development";
+    return process.env.NODE_ENV === "development";
 }
 
 export function isProd(): boolean {
-    return process.env.NODE_ENV == "production";
+    return process.env.NODE_ENV === "production";
 }
 
 export function debugPrint(obj1: any, ...objN: any[]) {
