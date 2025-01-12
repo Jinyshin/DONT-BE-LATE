@@ -106,8 +106,8 @@ export class NotificationsService {
     }
   }
 
-  testNotifications(testNotificatioinsDto: TestNotificationsDto){
-    this.sendNotification(
+  async testNotifications(testNotificatioinsDto: TestNotificationsDto){
+    await this.sendNotification(
       testNotificatioinsDto.token,
       {
         title: testNotificatioinsDto.title,
