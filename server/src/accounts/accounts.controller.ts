@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { KakaoSigninDto, SigninDto, SignupDto } from './accounts.dto';
+import { KakaoSigninDto, SigninDto, SignupDto, EmailDto } from './accounts.dto';
 
 @ApiTags('Accounts')
 @Controller('api/v1/accounts')
@@ -24,6 +24,15 @@ export class AccountsController {
       signinDto.email,
       signinDto.password,
     );
+  }
+
+  @Post('isregistered')
+  @ApiOperation({summary: '기존 등록된 이메일인지 확인'}  )
+  async isregistered(@Body() emailDto: EmailDto){
+    const isregistered= await this.accountService.isregistered(
+      emailDto.email,
+    );
+    return isregistered;
   }
 
   @Post('signup')

@@ -29,12 +29,28 @@ const SignupPage = () => {
   };
 
   const handleSignupClick = async () => {
-    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/accounts/signup`;
+    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/accounts/`;
+    //const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/accounts/signup`;
     console.log(url);
 
     try {
+      const isregistered = await axios.post(
+        url!+'isregistered',
+        {
+          email,
+        },
+        {
+          headers: {
+             "Content-Type": "application/json"
+          }
+        }
+      );
+      if(isregistered){
+        alert("이미 사용 중인 이메일입니다.");
+      }
+
       await axios.post(
-        url!,
+        url!+'signup',
         {
           email,
           nickname,

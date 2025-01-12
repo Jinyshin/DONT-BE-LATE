@@ -31,6 +31,23 @@ export class AccountsService {
     private readonly prisma: PrismaService,
   ) {}
 
+  async isregistered(
+    email: string
+  ){
+    const user = await this.prisma.user.findUnique({
+      where: { email},
+      select: {
+        id: true
+      },
+    });
+    if(user!){
+      return user.id;
+    }
+    else{
+      return false;
+    }
+  }
+
   async register(
     email: string,
     nickname: string,

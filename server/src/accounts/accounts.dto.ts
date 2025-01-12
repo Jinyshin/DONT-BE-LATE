@@ -10,6 +10,12 @@ import {
   IsUrl,
 } from 'class-validator';
 
+export class EmailDto{
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+}
+
 export class SigninDto {
   @ApiProperty({
     description: '사용자의 이메일 주소',
