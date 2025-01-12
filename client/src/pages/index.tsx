@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
 import axios from 'axios';
-import Image from 'next/image';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
 const kakaoRedirectUrl= process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URL || 'default';
 

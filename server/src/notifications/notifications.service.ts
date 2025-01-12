@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { Notification } from 'firebase-admin/lib/messaging/messaging-api';
+import { FirebaseService } from 'src/firebase/firebase.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { SaveTokenDto } from './dto/save-token.dto';
-import { FirebaseService } from 'src/firebase/firebase.service';
-import { Notification } from 'firebase-admin/lib/messaging/messaging-api';
 
 @Injectable()
 export class NotificationsService {

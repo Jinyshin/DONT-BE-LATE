@@ -1,9 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
 import { MdMoreHoriz, MdShare } from 'react-icons/md';
+import styled from 'styled-components';
 import { handleShare } from '../utils/share';
 import AppointmentParticipants from './AppointmentParticipant';
-import confetti from 'canvas-confetti';
 
 interface TimelineCardProps {
   title: string;

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import axios from 'axios';
-import TimelineCard from '../../components/TimelineCard';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
-import { formatDate } from '../../utils/dateFormatter';
 import CheckinModal from '../../components/Modal/CheckinModal';
+import TimelineCard from '../../components/TimelineCard';
+import { formatDate } from '../../utils/dateFormatter';
 
 interface Appointment {
   id: number;

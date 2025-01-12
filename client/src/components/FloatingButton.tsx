@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import { MdAdd } from 'react-icons/md';
+import styled from 'styled-components';
 
 interface FloatingButtonProps {
   onClick: () => void;
