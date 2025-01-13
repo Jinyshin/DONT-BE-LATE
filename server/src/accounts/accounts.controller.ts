@@ -6,7 +6,7 @@ import {
   Post
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { KakaoSigninDto, SigninDto, SignupDto } from './accounts.dto';
+import { KakaoSigninDto, SigninDto, SignupDto,EmailDto } from './accounts.dto';
 import { AccountsService } from './accounts.service';
 
 @ApiTags('Accounts')
