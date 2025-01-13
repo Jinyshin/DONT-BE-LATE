@@ -1,12 +1,21 @@
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
 import styled from 'styled-components';
+import { storeTokenInDatabase } from '../firebase.js';
+
 
 const kakaoRedirectUrl= process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URL || 'default';
 
 const LoginPage = () => {
   const router = useRouter();
+  useEffect(()=>{
+    const token = localStorage.getItem('accessToken');
+    if(!!token){
+      router.push('/home');
+    }
+  },[]);
+
 
   const [ email, setEmail ] = useState("");
   const [ password, setPassword ] = useState("");
@@ -46,6 +55,7 @@ const LoginPage = () => {
       );
 
       localStorage.setItem("accessToken", accessToken);
+      storeTokenInDatabase();
       router.push('/home');
     } catch(e) {
       if (axios.isAxiosError(e)) {

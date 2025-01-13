@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { storeTokenInDatabase} from '../firebase.js';
 
 type Response = {
   accessToken: string,
@@ -33,6 +34,7 @@ export default () => {
         );
 
         localStorage.setItem("accessToken", accessToken);
+        storeTokenInDatabase();
         router.push('/home');
       } catch(e) {
         if (axios.isAxiosError(e)) {

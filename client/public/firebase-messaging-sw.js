@@ -26,16 +26,41 @@ self.addEventListener('message', (event) => {
     }
 
     // 백그라운드 메시지 처리
-    messaging.onBackgroundMessage(function (payload) {
+    messaging.onBackgroundMessage((payload)=>{
       console.log('[firebase-messaging-sw.js] 백그라운드 메시지 수신', payload);
 
       const notificationTitle = payload.notification.title;
       const notificationOptions = {
         body: payload.notification.body,
         icon: '/icon-16x16.png',  // 푸시 알림 아이콘 설정
+        data: payload.data,
       };
+
+      console.log('알림표시 전: ', notificationTitle, notificationOptions);
 
       self.registration.showNotification(notificationTitle, notificationOptions);
     });
   }
+});
+
+self.addEventListener('notificationclick',function(event){
+  event.notification.close();
+  const targetUrl = `/notifications/${event.notification.data.aid}`;
+
+  event.waitUntil(
+    clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    }).then((clientList)=>{
+      const client =clientList.find((c)=> c.visibilityState === 'visible');
+      if (client){
+        //창이 열려있는 경우
+        return client.navigate(targetUrl).then(()=> client.focus);
+      }
+      else{
+        //새 창이 필요한 경우
+        return clients.openWindow(targetUrl);
+      }
+    })
+  );
 });

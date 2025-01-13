@@ -9,7 +9,7 @@ import theme from '../styles/theme';
 export default function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (typeof window !== 'undefined' &&  'serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/firebase/' })
         .then((registration) => {
           console.log('Service Worker registered:', registration);
 
