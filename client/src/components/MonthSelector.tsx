@@ -1,8 +1,8 @@
 // src/components/MonthSelector.tsx
     //MonthSelector for Monthly Ranking
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { getNextMonth, getPreviousMonth, formatMonth } from '../utils/dateUtil';
+import { formatMonth, getNextMonth, getPreviousMonth } from '../utils/dateUtil';
 
 interface MonthSelectorProps {
   monthWhenCalled: Date;
@@ -16,7 +16,7 @@ const MonthSelector: React.FC<MonthSelectorProps> = ({monthWhenCalled, currentMo
     (monthWhenCalled.getFullYear() > currentMonth.getFullYear()) ||
     ((monthWhenCalled.getFullYear() == currentMonth.getFullYear())
       && (getPreviousMonth(monthWhenCalled)> getPreviousMonth(currentMonth)));
-  
+
   const prevLimit=new Date(monthWhenCalled.getFullYear(),
   monthWhenCalled.getMonth()-6+1, 1)
 
@@ -60,8 +60,8 @@ const MonthSelector: React.FC<MonthSelectorProps> = ({monthWhenCalled, currentMo
         <ArrowButton onClick={handlePreviousMonth}>{"<"}</ArrowButton>
       : <GrayArrowButton>{"<"}</GrayArrowButton>
       }
-      
-      
+
+
       <MonthDisplay onClick={handleMonthClick}>
         {formatMonth(currentMonth)} <DropdownIcon>▼</DropdownIcon>
       </MonthDisplay>

@@ -1,14 +1,14 @@
+import axios from 'axios';
 import Image from 'next/image';
-import GroupBottomNavigation from '../../../components/GroupBottomNavigation';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FiShare2 } from 'react-icons/fi';
 import { IoMdMore } from 'react-icons/io';
 import styled from 'styled-components';
-import GroupHeader from '../../../components/GroupHeader';
 import FloatingButton from '../../../components/FloatingButton';
+import GroupBottomNavigation from '../../../components/GroupBottomNavigation';
+import GroupHeader from '../../../components/GroupHeader';
 import CreateAppointmentModal from '../../../components/Modal/CreateAppointmentModal';
-import axios from 'axios';
 
 // type Group = ReturnType<typeof getGroupById>;
 // type Appointment = Group['appointments'][number];

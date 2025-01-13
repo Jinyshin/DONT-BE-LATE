@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import ExpandableFloatingButton from '../../components/ExpandableFloatingButton';
 import Header from '../../components/Header';
 import MainBottomNavigation from '../../components/MainBottomNavigation';
-import ExpandableFloatingButton from '../../components/ExpandableFloatingButton';
 import CreateGroupModal from '../../components/Modal/CreateGroupModal';
 import JoinGroupModal from '../../components/Modal/JoinGroupModal';
 

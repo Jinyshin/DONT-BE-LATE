@@ -1,23 +1,22 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
-  Headers,
+  Controller,
   Delete,
-  Patch,
-  UnauthorizedException,
+  Get,
+  Headers,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post
 } from '@nestjs/common';
-import { AppointmentsService } from './appointments.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { PatchAppointmentDto } from './dto/patch-appointment.dto';
-import { authorize } from 'src/utils/jwt-auth';
 import { JwtService } from '@nestjs/jwt';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { authorize } from 'src/utils/jwt-auth';
+import { AppointmentsService } from './appointments.service';
 import { CheckinResponseDto } from './dto/checkin-response.dto';
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
+import { PatchAppointmentDto } from './dto/patch-appointment.dto';
 
 @Controller('api/v1/appointments')
 @ApiTags('Appointments')

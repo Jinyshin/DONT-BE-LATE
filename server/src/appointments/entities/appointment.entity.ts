@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Group } from 'src/groups/entities/group.entity';
-import { Checkin } from './checkin.entity';
 import { Participant } from 'src/users/entities/participant.entity';
+import { Checkin } from './checkin.entity';
 
 export class Appointment {
   @ApiProperty()

@@ -1,23 +1,23 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Query,
-  Headers,
   BadRequestException,
+  Body,
+  Controller,
   ForbiddenException,
+  Get,
+  Headers,
+  Param,
+  Post,
+  Query,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { GroupsService } from './groups.service';
-import { CreateGroupDto } from './dto/create-group.dto';
-import { CreateGroupMemberDto } from './dto/create-groupmember.dto';
-import { GroupMemberResponseDto } from './dto/group-member-response.dto';
 import { authorize } from 'src/utils/jwt-auth';
 import { AppointmentsService } from '../appointments/appointments.service';
 import { GetGroupAppointmentDto } from '../appointments/dto/get-group-appointments.dto';
+import { CreateGroupDto } from './dto/create-group.dto';
+import { CreateGroupMemberDto } from './dto/create-groupmember.dto';
+import { GroupMemberResponseDto } from './dto/group-member-response.dto';
+import { GroupsService } from './groups.service';
 
 @Controller('api/v1/groups')
 @ApiTags('Groups')

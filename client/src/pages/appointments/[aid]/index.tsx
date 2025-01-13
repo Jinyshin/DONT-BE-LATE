@@ -1,11 +1,11 @@
 // src/pages/appointments/{aid}.tsx
+import axios from 'axios';
+import { useParams, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams, useSearchParams } from 'next/navigation';
-import { EarlyArrivalList, LateArrivalList,NotArrivalList } from '../../../components/ArrivalList';
-import axios from 'axios';
-import AppointmentDetailHeader from '../../../components/AppointmentDetailHeader';
 import PushModalExample from '../../../components/Modal/PushModalExample';
+import AppointmentDetailHeader from '../../../components/AppointmentDetailHeader';
+import { EarlyArrivalList, LateArrivalList, NotArrivalList } from '../../../components/ArrivalList';
 
 const AppointmentDetail: React.FC = () => {
   const [isModalOpen, setIsModalOpen] =  useState<boolean>(false);

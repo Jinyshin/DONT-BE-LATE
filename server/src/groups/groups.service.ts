@@ -4,12 +4,12 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateGroupDto } from './dto/create-group.dto';
+import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { generateRandomCode } from 'src/utils/generate-groupcode';
-import { Group } from './entities/group.entity';
-import { JwtService } from '@nestjs/jwt';
+import { CreateGroupDto } from './dto/create-group.dto';
 import { GroupMemberResponseDto } from './dto/group-member-response.dto';
+import { Group } from './entities/group.entity';
 
 @Injectable()
 export class GroupsService {

@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import { MdClose } from 'react-icons/md';
 import confetti from 'canvas-confetti';
+import React, { useEffect } from 'react';
+import { MdClose } from 'react-icons/md';
+import styled from 'styled-components';
 
 interface CheckinModalProps {
   isOpen: boolean;

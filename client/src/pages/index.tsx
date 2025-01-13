@@ -1,9 +1,9 @@
 import React, { useState,useEffect } from 'react';
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import axios from 'axios';
-import Image from 'next/image';
 import { storeTokenInDatabase } from '../firebase.js';
+
 
 const kakaoRedirectUrl= process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URL || 'default';
 

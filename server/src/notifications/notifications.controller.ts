@@ -1,20 +1,27 @@
 import {
-  Controller,
-  Post,
-  Body,
-  Headers,
-  UnauthorizedException,
   BadRequestException,
+  Body,
+  Controller,
+  Headers,
   InternalServerErrorException,
+  Post,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { NotificationsService } from './notifications.service';
+
+import { JwtService } from '@nestjs/jwt';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { authorize } from 'src/utils/jwt-auth';
 import { SaveTokenDto } from './dto/save-token.dto';
 import { TestNotificationsDto } from './dto/test-notificatioins.dto';
-import { JwtService } from '@nestjs/jwt';
-import { authorize } from 'src/utils/jwt-auth';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { NotificationsService } from './notifications.service';
 
 @Controller('api/v1/notifications')
+@ApiTags('Notifications')
 export class NotificationsController {
   constructor(
     private readonly notificationsService: NotificationsService,
