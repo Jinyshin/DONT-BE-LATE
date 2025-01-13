@@ -3,12 +3,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { GetGroupAppointmentDto } from './dto/get-group-appointments.dto';
-import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
-import { Participant } from 'src/users/entities/participant.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Participant } from 'src/users/entities/participant.entity';
 import { CheckinResponseDto } from './dto/checkin-response.dto';
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
+import { GetGroupAppointmentDto } from './dto/get-group-appointments.dto';
 
 @Injectable()
 export class AppointmentsService {
@@ -222,6 +222,16 @@ export class AppointmentsService {
       earlycheckins.sort((a, b) => a.latency - b.latency);
       latecheckins.sort((a, b) => b.latency - a.latency);
       incompletecheckins.sort((a, b) => a.name.localeCompare(b.name));
+      
+      const now = new Date();
+      const seoulTime = new Date(
+        now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+      );
+
+      const time_left =
+      (new Date(seoulTime).getTime() -
+        new Date(appointment.meet_at).getTime()) /
+      1000;
 
       return {
         title: title,
@@ -229,6 +239,8 @@ export class AppointmentsService {
         latecheckins: latecheckins,
         earlycheckins: earlycheckins,
         incompletecheckins: incompletecheckins,
+        meet_at: meet_at,
+        time_left: time_left,
       };
     } catch (error) {
       console.error(error);

@@ -1,13 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsString,
+  IsEmail,
   IsNotEmpty,
   IsOptional,
-  IsEmail,
-  maxLength,
-  MaxLength,
-  isURL,
+  IsString,
   IsUrl,
+  MaxLength
 } from 'class-validator';
 
 export class EmailDto{

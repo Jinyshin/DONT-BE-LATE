@@ -1,12 +1,12 @@
 // src/pages/MonthlyRanking/index.tsx
+import axios from 'axios';
+import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import MonthSelector from '../../../../components/MonthSelector';
-import RankingList from '../../../../components/RankingList';
 import GroupBottomNavigation from '../../../../components/GroupBottomNavigation';
 import GroupHeader from '../../../../components/GroupHeader';
-import { useParams } from 'next/navigation';
-import axios from 'axios';
+import MonthSelector from '../../../../components/MonthSelector';
+import RankingList from '../../../../components/RankingList';
 
 
 type Ranking = {

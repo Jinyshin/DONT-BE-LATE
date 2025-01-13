@@ -1,14 +1,13 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   HttpException,
   InternalServerErrorException,
-  Post,
+  Post
 } from '@nestjs/common';
-import { AccountsService } from './accounts.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { KakaoSigninDto, SigninDto, SignupDto, EmailDto } from './accounts.dto';
+import { KakaoSigninDto, SigninDto, SignupDto } from './accounts.dto';
+import { AccountsService } from './accounts.service';
 
 @ApiTags('Accounts')
 @Controller('api/v1/accounts')

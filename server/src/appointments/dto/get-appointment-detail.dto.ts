@@ -18,4 +18,9 @@ export class GetAppointmentDetailDto {
   @ApiProperty()
   incompletecheckins: {name: string}[];
 
+  @ApiProperty()
+  meet_at: Date;
+
+  @ApiProperty()
+  time_left: number;
 }

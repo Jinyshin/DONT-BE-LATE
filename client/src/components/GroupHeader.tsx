@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import React from 'react';
 import { MdArrowBack } from 'react-icons/md';
+import styled from 'styled-components';
 
 interface GroupHeaderProps {
   title: string;
