@@ -8,6 +8,26 @@ import { TestNotificationsDto } from './dto/test-notificatioins.dto';
 @Injectable()
 export class NotificationsService {
   private alarm: NodeJS.Timeout | null = null;
+  private readonly NOTIFICATION_SCHEDULES = [
+    {
+      timing: 'JUST_BEFORE',
+      offset: 0,
+      title: '약속 시간 알림!',
+      bodyTemplate: (title: string) => `${title} 약속 시간이 다 되었어요!`,
+    },
+    {
+      timing: 'THIRTY_MIN_BEFORE',
+      offset: 30 * 60 * 1000,
+      title: '30분 전 알림',
+      bodyTemplate: (title: string) => `${title} 약속 30분 전입니다.`,
+    },
+    {
+      timing: 'ONE_HOUR_BEFORE',
+      offset: 60 * 60 * 1000,
+      title: '1시간 전 알림',
+      bodyTemplate: (title: string) => `${title} 약속 1시간 전입니다.`,
+    },
+  ];
 
   constructor(
     private readonly prisma: PrismaService,
@@ -69,41 +89,19 @@ export class NotificationsService {
           user: { fcmTokens },
         } of users) {
           for (const { token } of fcmTokens) {
-            // just-before alert
-            setTimeout(async () => {
-              const noti = {
-                title: `약속 시간 알림!`,
-                body: `${title} 약속 시간이 다 되었어요!`,
-              };
-              const data = { aid: id.toString() };
-              await this.sendNotification(token, noti, data);
-            }, meet_at.getTime() - now);
-
-            // 30m-before alert
-            setTimeout(
-              async () => {
-                const noti = {
-                  title: `30분 전 알림`,
-                  body: `${title} 약속 30분 전입니다.`,
-                };
-                const data = { aid: id.toString() };
-                await this.sendNotification(token, noti, data);
-              },
-              meet_at.getTime() - THIRTY_MINUTE - now,
-            );
-
-            // 1h-before alert
-            setTimeout(
-              async () => {
-                const noti = {
-                  title: `1시간 전 알림`,
-                  body: `${title} 약속 1시간 전입니다.`,
-                };
-                const data = { aid: id.toString() };
-                await this.sendNotification(token, noti, data);
-              },
-              meet_at.getTime() - ONE_HOUR - now,
-            );
+            for (const schedule of this.NOTIFICATION_SCHEDULES) {
+              setTimeout(
+                async () => {
+                  const noti = {
+                    title: schedule.title,
+                    body: schedule.bodyTemplate(title),
+                  };
+                  const data = { aid: id.toString() };
+                  await this.sendNotification(token, noti, data);
+                },
+                meet_at.getTime() - schedule.offset - now,
+              );
+            }
           }
         }
       }
@@ -117,18 +115,22 @@ export class NotificationsService {
     }
   }
 
-  async testNotifications(testNotificatioinsDto: TestNotificationsDto){
+  async testNotifications(testNotificatioinsDto: TestNotificationsDto) {
     await this.sendNotification(
       testNotificatioinsDto.token,
       {
         title: testNotificatioinsDto.title,
         body: testNotificatioinsDto.body,
       },
-      testNotificatioinsDto.data
+      testNotificatioinsDto.data,
     );
   }
 
-  private async sendNotification(token: string, notification: Notification, data: Record<string, string>) {
+  private async sendNotification(
+    token: string,
+    notification: Notification,
+    data: Record<string, string>,
+  ) {
     try {
       await this.firebase.firebaseRef
         .messaging()
