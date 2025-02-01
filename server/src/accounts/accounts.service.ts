@@ -49,7 +49,6 @@ export class AccountsService {
 
       return id;
     } catch (e) {
-      // if (e instanceof PrismaClientKnownRequestError) {}
       console.error(e);
       return null;
     }
@@ -100,7 +99,6 @@ export class AccountsService {
     });
 
     if (user === null) {
-      console.log(profile_url);
       throw new NotFoundException({ email, nickname, profile_url });
     }
 
@@ -131,4 +129,3 @@ export class AccountsService {
     return sha256(salted);
   }
 }
-

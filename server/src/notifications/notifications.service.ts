@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { Notification } from 'firebase-admin/lib/messaging/messaging-api';
+import { FirebaseService } from 'src/firebase/firebase.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { SaveTokenDto } from './dto/save-token.dto';
-import { FirebaseService } from 'src/firebase/firebase.service';
-import { Notification } from 'firebase-admin/lib/messaging/messaging-api';
 
 @Injectable()
 export class NotificationsService {
   private alarm: NodeJS.Timeout | null = null;
 
-  constructor(private readonly prisma: PrismaService, private readonly firebase: FirebaseService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly firebase: FirebaseService,
+  ) {}
 
   async saveToken(saveTokenDto: SaveTokenDto, userId: number) {
     const existingToken = await this.prisma.fcmToken.findUnique({
@@ -45,53 +48,61 @@ export class NotificationsService {
             select: {
               user: {
                 select: {
-                  fcmTokens: true
-                }
-              }
-            }
-          }
+                  fcmTokens: true,
+                },
+              },
+            },
+          },
         },
         where: {
           AND: [
             { meet_at: { gt: oneHourLater } },
-            { meet_at: { lte: twoHourLater } }
+            { meet_at: { lte: twoHourLater } },
           ],
-          is_deleted: false
-        }
+          is_deleted: false,
+        },
       });
 
       for (const { id, title, meet_at, users } of upcomings) {
-        for (const { user: { fcmTokens } } of users) {
+        for (const {
+          user: { fcmTokens },
+        } of users) {
           for (const { token } of fcmTokens) {
             // just-before alert
             setTimeout(async () => {
               const noti = {
                 title: `약속 시간 알림!`,
-                body: `${title} 약속 시간이 다 되었어요!`
+                body: `${title} 약속 시간이 다 되었어요!`,
               };
               const data = { aid: id.toString() };
               await this.sendNotification(token, noti, data);
             }, meet_at.getTime() - now);
 
             // 30m-before alert
-            setTimeout(async () => {
-              const noti = {
-                title: `30분 전 알림`,
-                body: `${title} 약속 30분 전입니다.`
-              };
-              const data = { aid: id.toString() };
-              await this.sendNotification(token, noti, data);
-            }, meet_at.getTime() - THIRTY_MINUTE - now);
+            setTimeout(
+              async () => {
+                const noti = {
+                  title: `30분 전 알림`,
+                  body: `${title} 약속 30분 전입니다.`,
+                };
+                const data = { aid: id.toString() };
+                await this.sendNotification(token, noti, data);
+              },
+              meet_at.getTime() - THIRTY_MINUTE - now,
+            );
 
             // 1h-before alert
-            setTimeout(async () => {
-              const noti = {
-                title: `1시간 전 알림`,
-                body: `${title} 약속 1시간 전입니다.`
-              };
-              const data = { aid: id.toString() };
-              await this.sendNotification(token, noti, data);
-            }, meet_at.getTime() - ONE_HOUR - now);
+            setTimeout(
+              async () => {
+                const noti = {
+                  title: `1시간 전 알림`,
+                  body: `${title} 약속 1시간 전입니다.`,
+                };
+                const data = { aid: id.toString() };
+                await this.sendNotification(token, noti, data);
+              },
+              meet_at.getTime() - ONE_HOUR - now,
+            );
           }
         }
       }
@@ -105,10 +116,13 @@ export class NotificationsService {
     }
   }
 
-  private async sendNotification(token: string, notification: Notification, data: Record<string, string>) {
+  private async sendNotification(
+    token: string,
+    notification: Notification,
+    data: Record<string, string>,
+  ) {
     try {
-      await this.firebase
-        .firebaseRef
+      await this.firebase.firebaseRef
         .messaging()
         .send({ token, notification, data });
     } catch (e) {
