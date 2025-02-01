@@ -12,10 +12,16 @@ export class JwtAuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers.authorization?.split(' ')[1]; // Bearer token 추출
+    const authHeader = request.headers.authorization;
 
-    if (!token) {
-      throw new UnauthorizedException('JWT token is missing');
+    if (!authHeader) {
+      throw new UnauthorizedException('인증 헤더가 누락되었습니다.');
+    }
+
+    const [bearer, token] = authHeader.split(' ');
+
+    if (bearer !== 'Bearer' || !token) {
+      throw new UnauthorizedException('잘못된 인증 토큰 형식입니다.');
     }
 
     try {
@@ -23,7 +29,9 @@ export class JwtAuthGuard implements CanActivate {
       request.user = decoded;
       return true;
     } catch (error) {
-      throw new UnauthorizedException('Invalid JWT token');
+      throw new UnauthorizedException(
+        '유효하지 않은 JWT 토큰입니다: ' + error.message,
+      );
     }
   }
 }
