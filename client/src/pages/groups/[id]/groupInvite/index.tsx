@@ -1,12 +1,11 @@
+import axios from 'axios';
+import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
-import ShareButton from '../../../../components/ShareButton';
-import QRCodeGenerator from '../../../../components/QRCodeGenerator';
-import GroupHeader from '../../../../components/GroupHeader';
 import GroupBottomNavigation from '../../../../components/GroupBottomNavigation';
-import { useParams } from 'next/navigation';
-import axios from 'axios';
+import GroupHeader from '../../../../components/GroupHeader';
+import QRCodeGenerator from '../../../../components/QRCodeGenerator';
+import ShareButton from '../../../../components/ShareButton';
 
 const GroupInvite: React.FC = () => {
   const groupId = useParams()?.id as string;

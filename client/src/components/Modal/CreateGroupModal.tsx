@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { MdClose } from 'react-icons/md';
+import styled from 'styled-components';
 
 interface ModalProps {
   isOpen: boolean;

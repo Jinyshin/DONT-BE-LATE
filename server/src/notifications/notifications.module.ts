@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { NotificationsService } from './notifications.service';
-import { NotificationsController } from './notifications.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { FirebaseModule } from 'src/firebase/firebase.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
+import { NotificationsController } from './notifications.controller';
+import { NotificationsService } from './notifications.service';
 
 @Module({
   imports: [
