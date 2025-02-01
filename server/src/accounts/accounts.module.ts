@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { AccountsService } from './accounts.service';
-import { AccountsController } from './accounts.controller';
 import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { AccountsController } from './accounts.controller';
+import { AccountsService } from './accounts.service';
 // import { ConfigService } from '@nestjs/config';
 
 @Module({

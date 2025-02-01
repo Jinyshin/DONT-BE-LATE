@@ -1,15 +1,15 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
+import { requestForToken } from '../firebase.js';
 import GlobalStyle from '../styles/globalStyles';
 import theme from '../styles/theme';
-import { useEffect } from 'react';
-import { requestForToken} from '../firebase.js';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (typeof window !== 'undefined' &&  'serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/firebase/' })
         .then((registration) => {
           console.log('Service Worker registered:', registration);
 
@@ -31,7 +31,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           console.error('Service Worker registration failed:', error);
         });
     }
-  }, []);  
+  }, []);
   return (
     <>
       <Head>

@@ -3,7 +3,7 @@ import {
   Controller,
   HttpException,
   InternalServerErrorException,
-  Post,
+  Post
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { KakaoSigninDto, SigninDto, SignupDto } from './accounts.dto';

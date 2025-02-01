@@ -1,14 +1,17 @@
 // src/pages/appointments/{aid}.tsx
+import axios from 'axios';
+import { useParams, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'next/navigation';
-import { EarlyArrivalList, LateArrivalList,NotArrivalList } from '../../../components/ArrivalList';
-import axios from 'axios';
+import PushModalExample from '../../../components/Modal/PushModalExample';
 import AppointmentDetailHeader from '../../../components/AppointmentDetailHeader';
-
+import { EarlyArrivalList, LateArrivalList, NotArrivalList } from '../../../components/ArrivalList';
 
 const AppointmentDetail: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] =  useState<boolean>(false);
+
   const params = useParams<{ aid: string }>();
+  const searchParams = useSearchParams();
   const [aid, setAid] = useState<number | null>(null);
 
   const [latecheckins, setLatecheckins]= useState<{name: string, latency: number}[]>([]);
@@ -17,6 +20,18 @@ const AppointmentDetail: React.FC = () => {
 
   const [title, setTitle]= useState<string>("...");
   const [penalty, setPenalty]= useState<string>("...");
+  const [meetAt, setMeetAt] = useState<Date>(new Date());
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+
+  const appointmentdata={
+    title: title,
+    penalty: penalty,
+    latecheckins: latecheckins,
+    earlycheckins: earlycheckins,
+    incompletecheckins: incompletecheckins,
+    meet_at: meetAt,
+    time_left: timeLeft
+  };
 
   useEffect(() => {
     if (params) {
@@ -32,13 +47,26 @@ const AppointmentDetail: React.FC = () => {
           setLatecheckins(data.latecheckins);
           setEarlycheckins(data.earlycheckins);
           setIncompletecheckins(data.incompletecheckins);
+          setMeetAt(data.meet_at);
+          setTimeLeft(data.time_left);
         } catch (error) {
           console.error('Failed to fetch appointment details:', error);
         }
       };
       fetchedAppDetail(aidNumber);
+
+      const modalParam = searchParams.get('modal');
+        setIsModalOpen(modalParam === 'true');
+      
     }
-  }, [params]);
+  }, [params, searchParams]);
+
+  const closeModal = () =>{
+    setIsModalOpen(false);
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.delete('modal');
+    window.history.replaceState({},'',currentUrl.toString());
+  }
 
   return (
     <Container>
@@ -63,6 +91,7 @@ const AppointmentDetail: React.FC = () => {
         <NotArrivalList checkins={incompletecheckins}/>
       </Card>
 
+      {isModalOpen && <PushModalExample isOpen={isModalOpen} appointmentdata={appointmentdata} onClose = {closeModal} />}
     </Container>
   );
 };

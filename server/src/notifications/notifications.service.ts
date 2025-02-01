@@ -3,6 +3,7 @@ import { Notification } from 'firebase-admin/lib/messaging/messaging-api';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { SaveTokenDto } from './dto/save-token.dto';
+import { TestNotificationsDto } from './dto/test-notificatioins.dto';
 
 @Injectable()
 export class NotificationsService {
@@ -116,11 +117,18 @@ export class NotificationsService {
     }
   }
 
-  private async sendNotification(
-    token: string,
-    notification: Notification,
-    data: Record<string, string>,
-  ) {
+  async testNotifications(testNotificatioinsDto: TestNotificationsDto){
+    await this.sendNotification(
+      testNotificatioinsDto.token,
+      {
+        title: testNotificatioinsDto.title,
+        body: testNotificatioinsDto.body,
+      },
+      testNotificatioinsDto.data
+    );
+  }
+
+  private async sendNotification(token: string, notification: Notification, data: Record<string, string>) {
     try {
       await this.firebase.firebaseRef
         .messaging()

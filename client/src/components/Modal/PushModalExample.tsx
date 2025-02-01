@@ -1,20 +1,25 @@
-import confetti from 'canvas-confetti';
-import React, { useEffect } from 'react';
 import { MdClose } from 'react-icons/md';
 import styled from 'styled-components';
 
-interface CheckinModalProps {
+
+interface PushModalExampleProps{
   isOpen: boolean;
+  appointmentdata: {
+    title: string,
+    penalty: string,
+    latecheckins: {name: string, latency:number,}[],
+    earlycheckins: {name: string, latency:number,}[],
+    incompletecheckins: {name: string}[],
+    meet_at: Date,
+    time_left: number,};
+  data?: {message: string};
   onClose: () => void;
-  time: number;
 }
 
-const CheckinModal: React.FC<CheckinModalProps> = ({
-  isOpen,
-  onClose,
-  time,
-}) => {
-  const isLate: boolean = time > 0;
+export default function PushModalExample(
+  {isOpen, data, appointmentdata, onClose}: PushModalExampleProps
+) {
+  const isLate: boolean = appointmentdata.time_left > 0;
 
   const formatTime = (time: number) => {
     const absTime = Math.abs(time);
@@ -29,20 +34,7 @@ const CheckinModal: React.FC<CheckinModalProps> = ({
     return formattedTime;
   };
 
-  const formattedTime = formatTime(time);
-
-  useEffect(() => {
-    if (isOpen && !isLate) {
-      confetti({
-        particleCount: 100,
-        spread: 80,
-        origin: { y: 0.4 },
-        angle: 90,
-        gravity: 3,
-        zIndex: 10000,
-      });
-    }
-  }, [isOpen, isLate]);
+  const formattedTime = formatTime(appointmentdata.time_left);
 
   if (!isOpen) return null;
 
@@ -50,23 +42,28 @@ const CheckinModal: React.FC<CheckinModalProps> = ({
     <Overlay>
       <ModalContainer>
         <Header>
-          <Title>체크인 완료</Title>
+          <Title>{appointmentdata.title}</Title>
           <CloseIcon onClick={onClose}>
             <MdClose size={24} />
           </CloseIcon>
         </Header>
+        <Penalty>오늘의 벌칙: {appointmentdata.penalty}</Penalty>
         <Content>
           {isLate ? (
             <Message>
+              약속시간에
+              <br />
               <FormattedTime color="#F22E2E">{formattedTime}</FormattedTime>{' '}
               <br />
-              늦게 도착했어요 😓
+              늦었어요 😓
             </Message>
           ) : (
             <Message>
+              약속시간까지
+              <br />
               <FormattedTime color="#5581D9">{formattedTime}</FormattedTime>{' '}
               <br />
-              빨리 도착했어요 🤩
+              남았습니다 🤩
             </Message>
           )}
         </Content>
@@ -137,6 +134,13 @@ const Message = styled.p`
   color: black;
 `;
 
+const Penalty = styled.div`
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: ${({ theme }) => theme.colors.primary};
+`;
+
 const FormattedTime = styled.span<{ color: string }>`
   color: ${(props) => props.color};
 `;
@@ -156,4 +160,3 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-export default CheckinModal;

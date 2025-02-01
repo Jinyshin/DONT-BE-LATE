@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
 import Link from 'next/link';
+import React, { useState } from 'react';
 import { MdHomeFilled, MdPeopleAlt } from 'react-icons/md';
+import styled from 'styled-components';
 
 interface MainBottomNavigationProps {
   activeTab?: string;
