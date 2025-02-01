@@ -3,6 +3,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class GetGroupAppointmentDto {
+  constructor(partial: Partial<GetGroupAppointmentDto>) {
+    Object.assign(this, partial);
+  }
+
   @ApiProperty()
   id: number;
 

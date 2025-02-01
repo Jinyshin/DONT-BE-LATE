@@ -3,12 +3,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { GetGroupAppointmentDto } from './dto/get-group-appointments.dto';
-import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
-import { Participant } from 'src/users/entities/participant.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Participant } from 'src/users/entities/participant.entity';
 import { CheckinResponseDto } from './dto/checkin-response.dto';
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { GetAppointmentDetailDto } from './dto/get-appointment-detail.dto';
+import { GetGroupAppointmentDto } from './dto/get-group-appointments.dto';
 
 @Injectable()
 export class AppointmentsService {
@@ -317,14 +317,14 @@ export class AppointmentsService {
         (participant) => participant.uid === uid,
       );
 
-      return {
+      return new GetGroupAppointmentDto({
         id: appointment.id,
         title: appointment.title,
         meet_at: appointment.meet_at,
         location: appointment.location,
         profileurl: profileUrls,
         participated: participated,
-      };
+      });
     });
   }
 }
