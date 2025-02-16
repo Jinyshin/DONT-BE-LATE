@@ -96,8 +96,8 @@ export class GroupsController {
     @Query('month') month?: string,
     @Headers('Authorization') authorization?: string,
   ) {
-    const _year = parseInt(year);
-    const _month = parseInt(month);
+    const _year = parseInt(year!);
+    const _month = parseInt(month!);
     if (!Number.isInteger(_year) || !Number.isInteger(_month)) {
       throw new BadRequestException();
     }

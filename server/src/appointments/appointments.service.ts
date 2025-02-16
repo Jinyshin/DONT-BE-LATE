@@ -189,7 +189,7 @@ export class AppointmentsService {
         penalty,
         users: participants,
         checkins,
-      } = appointment;
+      } = appointment!;
       const earlycheckins: { name: string; latency: number }[] = [];
       const latecheckins: { name: string; latency: number }[] = [];
       const incompletecheckins: { name: string }[] = [];
@@ -203,7 +203,7 @@ export class AppointmentsService {
         } else {
           const latency =
             (new Date(thecheckin.created_at).getTime() -
-              new Date(appointment.meet_at).getTime()) /
+              new Date(meet_at).getTime()) /
             1000;
           if (latency > 0) {
             latecheckins.push({
@@ -230,7 +230,7 @@ export class AppointmentsService {
 
       const time_left =
         (new Date(seoulTime).getTime() -
-          new Date(appointment.meet_at).getTime()) /
+          new Date(meet_at).getTime()) /
         1000;
 
       return {

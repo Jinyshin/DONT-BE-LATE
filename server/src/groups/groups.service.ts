@@ -139,7 +139,7 @@ export class GroupsService {
   }
 
   async getRanking(id: number, year: number, month: number) {
-    const { rankings } = await this.prisma.group.findUnique({
+    const { rankings } = (await this.prisma.group.findUnique({
       where: { id, is_deleted: false },
       select: {
         rankings: {
@@ -165,7 +165,7 @@ export class GroupsService {
           },
         },
       },
-    });
+    }))!;
 
     return { rankings };
   }

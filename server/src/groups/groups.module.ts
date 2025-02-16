@@ -12,7 +12,7 @@ import { GroupsService } from './groups.service';
     PrismaModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: +process.env.JWT_MAX_AGE },
+      signOptions: { expiresIn: parseInt(process.env.JWT_MAX_AGE!) },
     }),
   ],
 })
