@@ -18,7 +18,7 @@ import { AccountsService } from './accounts.service';
     // })
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: parseInt(process.env.JWT_MAX_AGE) },
+      signOptions: { expiresIn: parseInt(process.env.JWT_MAX_AGE!) },
     }),
     PrismaModule
   ],
