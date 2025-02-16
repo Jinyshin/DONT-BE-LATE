@@ -1,8 +1,10 @@
-import React, { useState,useEffect } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { storeTokenInDatabase } from '../firebase.js';
+import { signIn } from '../utils/apis/accounts';
+import { BadRequestException, NotFoundException } from '../utils/apis/common';
+import { Jwt } from '../utils/apis/token';
+import { debugPrint } from '../utils/debug';
 
 
 const kakaoRedirectUrl= process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URL || 'default';
@@ -34,38 +36,21 @@ const LoginPage = () => {
   };
 
   const handleLogin = async () => {
-    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/accounts/signin`;
-
     try {
-      type Response = {
-        accessToken: string,
-        refreshToken?: string
-      }
-      const { data: { accessToken } } = await axios.post<Response>(
-        url!,
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+      let { accessToken } = await signIn({ email, password });
+      let token = Jwt.fromString(accessToken)!;
 
-      localStorage.setItem("accessToken", accessToken);
-      storeTokenInDatabase();
+      debugPrint("accessToken:", accessToken);
+
+      token.storeToLocalStorage();
       router.push('/home');
-    } catch(e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response?.status === 400) {
-          alert('bad request');
-        } else if (e.response?.status === 404) {
-          alert("no such accout")
-        } else {
-          alert('unknown error');
-        }
+    } catch (e) {
+      if (e instanceof BadRequestException) {
+        alert('bad request');
+      } else if (e instanceof NotFoundException) {
+        alert('no such account');
+      } else {
+        console.error('unknown error >', e);
       }
     }
   }

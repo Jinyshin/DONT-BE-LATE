@@ -1,8 +1,10 @@
-import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { signUp } from '../../utils/apis/accounts';
+import { BadRequestException } from '../../utils/apis/common';
+import { debugPrint } from '../../utils/debug';
 
 
 const SignupPage = () => {
@@ -29,32 +31,16 @@ const SignupPage = () => {
   };
 
   const handleSignupClick = async () => {
-    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/accounts/signup`;
-    console.log(url);
-
     try {
-      await axios.post(
-        url!,
-        {
-          email,
-          nickname,
-          password,
-          profileUrl,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+      let { id: uid } = await signUp({ email, nickname, password, profileUrl });
+      debugPrint('uid:', uid);
+
       router.push('/');
-    } catch(e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response?.status === 400) {
-          alert('bad request');
-        } else {
-          alert('unknown error');
-        }
+    } catch (e) {
+      if (e instanceof BadRequestException) {
+        alert('bad request');
+      } else {
+        console.error('unknown error >', e);
       }
     }
   };
